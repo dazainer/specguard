@@ -4,7 +4,7 @@ An AI-powered internal engineering tool that ingests product specifications and 
 
 Built with a multi-stage processing pipeline: document parsing → requirement extraction → test generation → validation → coverage scoring.
 
-![SpecGuard](screenshot1.png)
+![SpecGuard](screenshot2.png)
 
 ## Architecture
 

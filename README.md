@@ -1,4 +1,4 @@
-# SpecGuard — AI Test Intelligence Platform
+# SpecGuard: AI Test Intelligence Platform
 
 An AI-powered internal engineering tool that ingests product specifications and generates **schema-validated test suites** with functional tests, edge cases, negative tests, and coverage analysis.
 

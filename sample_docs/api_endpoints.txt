@@ -1,0 +1,61 @@
+# Task Management API Documentation
+
+## Base URL
+`https://api.taskapp.io/v1`
+
+## Endpoints
+
+### POST /tasks
+Create a new task.
+
+**Request Body:**
+- title (string, required): Task title, 1-200 characters
+- description (string, optional): Task description, max 2000 characters  
+- due_date (ISO 8601, optional): Due date for the task
+- priority (string, optional): One of "low", "medium", "high". Default: "medium"
+- assignee_id (UUID, optional): ID of the user to assign the task to
+
+**Response (201):**
+Returns the created task object with generated ID and timestamps.
+
+**Errors:**
+- 400: Invalid request body (missing title, title too long, invalid priority)
+- 401: Not authenticated
+- 403: Not authorized to create tasks in this workspace
+
+### GET /tasks
+List all tasks in the workspace.
+
+**Query Parameters:**
+- status (string): Filter by "open", "in_progress", "completed", "archived"
+- assignee (UUID): Filter by assignee
+- priority (string): Filter by priority
+- page (int): Page number, default 1
+- limit (int): Items per page, 1-100, default 20
+- sort (string): Sort by "created_at", "due_date", "priority". Default: "created_at"
+
+**Response (200):**
+Returns paginated list of tasks with total count.
+
+### PATCH /tasks/{id}
+Update a task.
+
+**Path Parameters:**
+- id (UUID, required): Task ID
+
+**Request Body (all optional):**
+- title, description, due_date, priority, assignee_id, status
+
+**Response (200):**
+Returns the updated task object.
+
+**Errors:**
+- 400: Invalid field values
+- 404: Task not found
+- 403: Not authorized to update this task
+
+### DELETE /tasks/{id}
+Delete a task. Only the task creator or workspace admin can delete.
+
+**Response (204):** No content on success.
+**Errors:** 404 if not found, 403 if not authorized.

@@ -1,8 +1,21 @@
 # SpecGuard: AI Test Intelligence Platform
 
-An AI-powered internal engineering tool that ingests product specifications and generates **schema-validated test suites** with functional tests, edge cases, negative tests, and coverage analysis.
+An AI-powered engineering tool that ingests product specifications and generates **schema-validated test suites** with functional tests, edge cases, negative tests, and coverage analysis.
 
-Built with a multi-stage processing pipeline: document parsing → requirement extraction → test generation → validation → coverage scoring.
+Built with a multi-stage processing pipeline: document parsing → requirement extraction → test generation → Pydantic validation → coverage scoring.
+
+![SpecGuard Dashboard](docs/screenshot1.png)
+
+![SpecGuard Requirements](docs/screenshot2.png)
+
+---
+
+## How It Works
+
+1. **Upload a spec** — feature specs, user stories, API docs, or release notes (`.txt`, `.md`, `.pdf`)
+2. **Extract requirements** — AI parses the document into individual testable requirements, validated against a Pydantic schema
+3. **Generate test cases** — for each requirement, generates functional tests, edge cases, and negative tests with automatic retry on validation failure
+4. **Score and review** — coverage score computed across 4 heuristics; review, approve/reject, and export test cases as JSON or Markdown
 
 ![SpecGuard](screenshot2.png)
 
@@ -16,12 +29,20 @@ Python + FastAPI backend
    │         │
    │    AI Pipeline (4 stages)
    │    ├── Parse document
-   │    ├── Extract requirements (OpenAI)
-   │    ├── Generate tests per requirement (OpenAI)
-   │    └── Validate (Pydantic) + Score
+   │    ├── Extract requirements (OpenAI + Pydantic validation)
+   │    ├── Generate tests per requirement (OpenAI + Pydantic validation)
+   │    └── Score coverage (heuristic: req coverage, edge case ratio, negative ratio, step completeness)
    │
-   └── PostgreSQL / SQLite
+   └── SQLite (dev) / PostgreSQL (prod)
 ```
+
+## Key Engineering Decisions
+
+- **Multi-stage pipeline** over single-prompt generation — decomposing into parse → extract → generate → validate reduces hallucination and makes each stage independently debuggable
+- **Pydantic schema validation on every AI output** with automatic retry and error feedback — the model self-corrects when outputs fail validation
+- **Per-requirement generation** — smaller context per AI call produces more focused, less hallucinated test cases
+- **Coverage scoring** as a heuristic quality metric — measures requirement coverage, edge case density, negative test ratio, and step completeness
+- **Python + FastAPI** chosen deliberately over Node.js to demonstrate stack versatility and leverage Pydantic's native integration
 
 ## Tech Stack
 
@@ -29,36 +50,35 @@ Python + FastAPI backend
 |-------|-----------|
 | Frontend | React, TypeScript, Vite, Lucide Icons |
 | Backend | Python, FastAPI, Pydantic v2, SQLAlchemy 2.0 |
-| Database | PostgreSQL (prod) / SQLite (dev) |
-| AI | OpenAI gpt-4o-mini, structured JSON output |
+| Database | SQLite (dev) / PostgreSQL (prod) |
+| AI | OpenAI gpt-4o-mini with JSON mode + structured output validation |
 | Testing | pytest |
 
 ## Quick Start
 
 ### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- An OpenAI API key
 
-### Backend Setup
+- Python 3.10+
+- Node.js 18+
+- OpenAI API key
+
+### Backend
 
 ```bash
 cd backend
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 
-# Create .env file
 cp ../.env.example .env
-# Edit .env and add your OPENAI_API_KEY
+# Add your OPENAI_API_KEY to .env
 
-# Start the server
 uvicorn app.main:app --reload
 ```
 
-The API will be available at `http://localhost:8000` with auto-generated Swagger docs at `/docs`.
+API available at `http://localhost:8000` with Swagger docs at `/docs`.
 
-### Frontend Setup
+### Frontend
 
 ```bash
 cd frontend
@@ -66,29 +86,14 @@ npm install
 npm run dev
 ```
 
-The frontend will be available at `http://localhost:5173` and proxies API requests to the backend.
+Frontend available at `http://localhost:5173`.
 
 ### Run Tests
 
 ```bash
 cd backend
-pytest tests/ -v
+python -m pytest tests/ -v
 ```
-
-## How It Works
-
-1. **Upload a spec** — feature spec, user story, API docs, or release notes (.txt, .md, .pdf)
-2. **Extract requirements** — AI parses the document into individual testable requirements, validated against a Pydantic schema
-3. **Generate test cases** — For each requirement, AI generates functional tests, edge cases, and negative tests with retry logic on validation failure
-4. **Score and review** — Coverage score computed across 4 heuristics; review, approve/reject, and export test cases
-
-## Key Engineering Decisions
-
-- **Multi-stage pipeline** over single-prompt generation for better reliability and debuggability
-- **Pydantic schema validation** on every AI output with automatic retry + error feedback
-- **Per-requirement generation** to reduce hallucination (smaller context per call)
-- **Coverage scoring** as a heuristic quality metric (requirement coverage, edge case density, negative test ratio, step completeness)
-- **SQLite for development** with PostgreSQL-compatible schema for production
 
 ## Project Structure
 
@@ -96,25 +101,27 @@ pytest tests/ -v
 specguard/
 ├── backend/
 │   ├── app/
-│   │   ├── main.py              # FastAPI app
-│   │   ├── config.py            # Settings
-│   │   ├── database.py          # SQLAlchemy async setup
-│   │   ├── models/              # Database models
-│   │   ├── schemas/             # Pydantic schemas (API + AI output)
-│   │   ├── routes/              # API endpoints
-│   │   ├── services/            # Business logic
-│   │   │   ├── ai_client.py     # OpenAI wrapper + retry
-│   │   │   ├── pipeline.py      # Multi-stage orchestrator
-│   │   │   ├── file_parser.py   # Document ingestion
-│   │   │   └── scorer.py        # Coverage scoring
+│   │   ├── main.py              # FastAPI application
+│   │   ├── config.py            # Environment settings (Pydantic Settings)
+│   │   ├── database.py          # Async SQLAlchemy setup
+│   │   ├── models/              # SQLAlchemy ORM models
+│   │   ├── schemas/             # Pydantic schemas
+│   │   │   ├── api.py           # Request/response schemas
+│   │   │   └── ai_output.py     # AI output validation schemas
+│   │   ├── routes/              # API endpoints (projects, documents, generation, test suites)
+│   │   ├── services/
+│   │   │   ├── ai_client.py     # OpenAI wrapper with retry logic
+│   │   │   ├── pipeline.py      # Multi-stage pipeline orchestrator
+│   │   │   ├── file_parser.py   # Document ingestion (.txt, .md, .pdf)
+│   │   │   └── scorer.py        # Coverage scoring algorithm
 │   │   └── prompts/             # AI prompt templates
-│   └── tests/                   # pytest test suite
+│   └── tests/                   # pytest suite
 ├── frontend/
 │   └── src/
 │       ├── api/client.ts        # Typed API client
-│       ├── types/index.ts       # TypeScript types
-│       ├── components/          # Reusable components
-│       └── pages/               # Route pages
+│       ├── types/index.ts       # TypeScript type definitions
+│       ├── components/          # ScoreRing, TestCaseCard, CreateProjectModal
+│       └── pages/               # ProjectsPage, ProjectPage, DocumentPage
 └── sample_docs/                 # Example specs for testing
 ```
 

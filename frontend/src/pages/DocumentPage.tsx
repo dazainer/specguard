@@ -129,7 +129,7 @@ export function DocumentPage() {
   return (
     <>
       <div className="breadcrumbs">
-        <Link to="/">Projects</Link>
+        <Link to="/projects">Projects</Link>
         <span className="sep">/</span>
         <Link to={`/projects/${doc.project_id}`}>Project</Link>
         <span className="sep">/</span>

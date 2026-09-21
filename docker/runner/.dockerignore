@@ -1,0 +1,8 @@
+*
+!Dockerfile
+!requirements.lock
+!build.lock
+!mutation.lock
+!mutation_inventory.py
+!run_pytest.py
+!pytest.ini

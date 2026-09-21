@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "path": ".specguard/generated_tests/test_shipping.py",
+      "content": "from src.shipping import shipping_charge\ndef test_light():\n    assert shipping_charge(500,1000) == 400\ndef test_heavy():\n    assert shipping_charge(2000,1000) == 700\ndef test_free():\n    assert shipping_charge(500,6000) == 0\n"
+    }
+  ],
+  "assumptions": [
+    "Handwritten deterministic fixture, not live model output."
+  ],
+  "targeted_requirements": [
+    "For integer weight in grams and subtotal in cents, require weight > 0 and subtotal >= 0 or raise ValueError. Validate before applying free shipping. Shipping is free when subtotal >= 5000; otherwise costs 700 cents for weight > 1000 and 400 cents for weight <= 1000. Other types are outside the contract."
+  ]
+}

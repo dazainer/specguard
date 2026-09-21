@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Upload, FileText, ChevronRight, Trash2, BarChart3 } from 'lucide-react';
+import { Upload, FileText, ChevronRight, Trash2 } from 'lucide-react';
 import { api } from '../api/client';
 import type { Project, DocumentListItem, ProjectStats } from '../types';
 
@@ -74,7 +74,7 @@ export function ProjectPage() {
   return (
     <>
       <div className="breadcrumbs">
-        <Link to="/">Projects</Link>
+        <Link to="/projects">Projects</Link>
         <span className="sep">/</span>
         <span className="current">{project.name}</span>
       </div>

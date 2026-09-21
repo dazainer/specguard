@@ -1,8 +1,9 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { Shield, BookOpen, Github } from 'lucide-react';
+import { Shield, BookOpen } from 'lucide-react';
 import { ProjectsPage } from './pages/ProjectsPage';
 import { ProjectPage } from './pages/ProjectPage';
 import { DocumentPage } from './pages/DocumentPage';
+import { EvaluationsPage, EvaluationPage } from './pages/EvaluationsPage';
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,11 +17,13 @@ function AppLayout({ children }: { children: React.ReactNode }) {
             <span className="app-logo-text">SpecGuard</span>
           </Link>
           <div className="app-logo-divider" />
-          <span className="app-logo-tag">AI Test Intelligence</span>
+          <span className="app-logo-tag">Executable evaluation</span>
         </div>
         <div className="app-header-right">
+          <Link to="/" className="app-header-link">Evaluations</Link>
+          <Link to="/projects" className="app-header-link">Manual QA</Link>
           <a
-            href="http://localhost:8000/docs"
+            href={import.meta.env.VITE_API_DOCS_URL || 'http://localhost:8000/docs'}
             target="_blank"
             rel="noreferrer"
             className="app-header-link"
@@ -33,13 +36,13 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="app-main">{children}</main>
 
       <footer className="app-footer">
-        <span>SpecGuard v0.1.0 — AI-Powered Test Intelligence</span>
+        <span>SpecGuard — Executable test evaluation</span>
         <div className="app-footer-stack">
           <span className="tech-pill">React</span>
           <span className="tech-pill">FastAPI</span>
           <span className="tech-pill">Pydantic</span>
-          <span className="tech-pill">OpenAI</span>
-          <span className="tech-pill">PostgreSQL</span>
+          <span className="tech-pill">Docker</span>
+          <span className="tech-pill">SQLite</span>
         </div>
       </footer>
     </div>
@@ -51,7 +54,9 @@ export default function App() {
     <BrowserRouter>
       <AppLayout>
         <Routes>
-          <Route path="/" element={<ProjectsPage />} />
+          <Route path="/" element={<EvaluationsPage />} />
+          <Route path="/evaluations/:runId" element={<EvaluationPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:projectId" element={<ProjectPage />} />
           <Route path="/documents/:documentId" element={<DocumentPage />} />
         </Routes>

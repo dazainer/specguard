@@ -7,6 +7,8 @@ __pycache__/
 venv/
 env/
 *.db
+.pytest_cache/
+*.tsbuildinfo
 
 # Node
 node_modules/
@@ -26,3 +28,10 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# Local evaluation prompts, generated artifacts, raw mutant logs and caches
+benchmark-runs/
+.specguard-cache/
+.specguard-data/
+*.db-shm
+*.db-wal

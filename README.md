@@ -1,130 +1,108 @@
-# SpecGuard: AI Test Intelligence Platform
+# SpecGuard
 
-An AI-powered engineering tool that ingests product specifications and generates **schema-validated test suites** with functional tests, edge cases, negative tests, and coverage analysis.
+Executable test evaluation from specifications: validate pytest artifacts, require repeated passing baselines, then compare native and generated suites against the **same pinned mutation inventory**.
 
-Built with a multi-stage processing pipeline: document parsing → requirement extraction → test generation → Pydantic validation → coverage scoring.
+The local web product uses five curated subjects and handwritten fixtures. The CLI also has a live-generation adapter, but all published verification is offline; fixture results do not establish AI test quality.
 
-![SpecGuard Dashboard](docs/screenshot1.png)
+## Measured benchmark
 
-![SpecGuard Requirements](docs/screenshot2.png)
+Twenty evaluations completed across five pinned synthetic subjects (two prompt configurations × two trials). Tests are handwritten fixtures, not live-model output; these results do not measure prompt quality.
 
----
+| Subject | Native killed / denominator | Fixture killed / denominator | Completed trials |
+| --- | --- | --- | --- |
+| access_policy | 7/7 (100.0%) | 6/7 (85.7%) | 4/4 |
+| first_subject | 40/52 (76.9%) | 29/52 (55.8%) | 4/4 |
+| intervals | 4/6 (66.7%) | 3/6 (50.0%) | 4/4 |
+| pagination | 12/13 (92.3%) | 8/13 (61.5%) | 4/4 |
+| shipping | 12/13 (92.3%) | 3/13 (23.1%) | 4/4 |
 
-## How It Works
+Three sequential cache trials averaged 77.1 s cold and 43.2 s warm on the first subject. See [measurements, limitations and reproduction](docs/phase-5-validation.md).
 
-1. **Upload a spec** — feature specs, user stories, API docs, or release notes (`.txt`, `.md`, `.pdf`)
-2. **Extract requirements** — AI parses the document into individual testable requirements, validated against a Pydantic schema
-3. **Generate test cases** — for each requirement, generates functional tests, edge cases, and negative tests with automatic retry on validation failure
-4. **Score and review** — coverage score computed across 4 heuristics; review, approve/reject, and export test cases as JSON or Markdown
+## Try it locally
 
-![SpecGuard](screenshot2.png)
+Install Docker Desktop (or a local Linux Docker engine with cgroups v2 and default seccomp), Git, and Docker Compose. From this repository's root:
+
+```bash
+docker build --tag specguard-runner:evaluation docker/runner
+export EVALUATION_RUNNER_IMAGE="$(docker image inspect specguard-runner:evaluation --format '{{.Id}}')"
+export SPECGUARD_WORKSPACE="$PWD"
+mkdir -p .specguard-data/tmp benchmark-runs
+docker compose up --build -d
+```
+
+Open **http://localhost:8080**. Register `access_policy`, leave **Baseline only** selected, and start an evaluation. Uncheck it for the mutation comparison. No API key is required. Dependencies are downloaded during image builds; evaluation itself uses local fixtures and has no network access inside runner containers.
+
+API documentation: http://localhost:8000/docs. `GET /api/health` checks the API; `GET /api/evaluations/ready` checks the migrated database, worker heartbeat, and image configuration. Stop with `docker compose down`; persisted data stays on disk. The [operations guide](docs/evaluation-operations.md) covers development servers, port overrides, recovery, backup and retention.
+
+![Real local fixture evaluations](docs/evaluation-overview.png)
+![Native and generated fixture comparison](docs/evaluation-run.png)
 
 ## Architecture
 
-```
-React + TypeScript frontend
-        │
-        ▼  REST API
-Python + FastAPI backend
-   │         │
-   │    AI Pipeline (4 stages)
-   │    ├── Parse document
-   │    ├── Extract requirements (OpenAI + Pydantic validation)
-   │    ├── Generate tests per requirement (OpenAI + Pydantic validation)
-   │    └── Score coverage (heuristic: req coverage, edge case ratio, negative ratio, step completeness)
-   │
-   └── SQLite (dev) / PostgreSQL (prod)
+```mermaid
+flowchart LR
+    UI[React evaluation UI] --> API[FastAPI]
+    API --> DB[(SQLite durable queue / Alembic)]
+    DB --> W[Single worker supervisor]
+    W --> E[Evaluator child / shared CLI pipeline]
+    E --> D[Docker runner]
+    D --> T[Collection / baseline / mutmut variants]
+    E --> A[Private artifacts and JSON reports]
+    W --> DB
+    API --> A
 ```
 
-## Key Engineering Decisions
+The API persists requests and never owns long-running evaluation tasks. A separate worker claims one run, supervises a bounded child process, and records progress and terminal results. API restarts preserve work. Worker loss produces a retained failed record after recovery; it does not silently retry execution. Repeated submissions with the same idempotency key return the same run.
 
-- **Multi-stage pipeline** over single-prompt generation — decomposing into parse → extract → generate → validate reduces hallucination and makes each stage independently debuggable
-- **Pydantic schema validation on every AI output** with automatic retry and error feedback — the model self-corrects when outputs fail validation
-- **Per-requirement generation** — smaller context per AI call produces more focused, less hallucinated test cases
-- **Coverage scoring** as a heuristic quality metric — measures requirement coverage, edge case density, negative test ratio, and step completeness
-- **Python + FastAPI** chosen deliberately over Node.js to demonstrate stack versatility and leverage Pydantic's native integration
+Artifacts, execution logs, native/generated results, filtered mutants and JSON/Markdown/CSV downloads are available in the UI. Scores show `killed / (killed + survived)`; timeouts, invalid mutants, errors and suspicious outcomes remain separate. Baseline-only and incomplete runs do not imply a successful mutation evaluation.
 
-## Tech Stack
+## Isolation and scope
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React, TypeScript, Vite, Lucide Icons |
-| Backend | Python, FastAPI, Pydantic v2, SQLAlchemy 2.0 |
-| Database | SQLite (dev) / PostgreSQL (prod) |
-| AI | OpenAI gpt-4o-mini with JSON mode + structured output validation |
-| Testing | pytest |
+Test code runs in fresh non-root containers with networking disabled, read-only staged inputs/root filesystem, dropped capabilities, default seccomp, bounded temporary storage, memory, processes, output and wall time. Only the trusted worker has the Docker socket. The API accepts installed curated subjects; it cannot accept arbitrary repositories, commands, images or live providers.
 
-## Quick Start
+This is a **local/private, single-host** application without authentication. Container isolation is not a proof against hostile Python, Docker/kernel exploits or falsified test observations. Do not expose it as a public multi-tenant execution service. See the [threat model](docs/threat-model.md).
 
-### Prerequisites
+## Two-minute demo
 
-- Python 3.10+
-- Node.js 18+
-- OpenAI API key
+1. Open the evaluator and register `access_policy` (about 15 seconds).
+2. Start a baseline check and watch queued → preparing → collection → baseline → completed. Inspect generated source and execution logs (about 30 seconds, hardware dependent).
+3. Start a full comparison. Inspect the distinct native and fixture results, select surviving mutants, expand a diff, and download JSON or CSV (about 60 seconds).
+4. Start another run and cancel it. Show its retained cancelled state, then open **Manual QA** to see the separate legacy workflow (about 15 seconds).
 
-### Backend
+Full evaluation timing depends on Docker and host load; a completed local run can be used for the comparison portion.
+
+## Reproduce and verify
+
+The [CLI guide](docs/evaluation-cli.md) documents single evaluations, the five-subject matrix and fixture/live distinctions. [Methodology](docs/evaluation-methodology.md) defines eligibility and denominators. [Phase 5 evidence](docs/phase-5-validation.md) contains repeated measurements; [Phase 6 validation](docs/phase-6-validation.md) records lifecycle, Compose and browser checks.
+
+For Python 3.12 development:
 
 ```bash
 cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-cp ../.env.example .env
-# Add your OPENAI_API_KEY to .env
-
-uvicorn app.main:app --reload
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pytest -q
+# Docker opt-in checks (export the immutable runner ID first):
+SPECGUARD_DOCKER_TESTS=1 SPECGUARD_RUNNER_IMAGE="$EVALUATION_RUNNER_IMAGE" \
+  .venv/bin/python -m pytest tests/evaluation/test_execution_docker.py \
+  tests/evaluation/test_evaluation_docker.py tests/evaluation/test_product_docker.py -q
 ```
 
-API available at `http://localhost:8000` with Swagger docs at `/docs`.
+For Node.js 22 development, run `npm ci` and `npm run build` from `frontend/`. CI runs backend tests, the frontend build and a separate Docker verification job. Deterministic tests require no API credits. Backend direct dependencies are pinned; transitive application dependencies are not fully locked. The runner uses hashed dependency locks and an immutable image ID.
 
-### Frontend
+## Legacy manual QA
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
+`/projects` retains document upload, requirement extraction, manual test descriptions, review and JSON/Markdown exports. Live manual generation needs an OpenAI API key; the default Compose stack deliberately sets an empty key. Its heuristic coverage is distinct from executable mutation score. Its tasks still run in the API process and its development database still uses startup `create_all`; the durable worker and Alembic migration described here apply to evaluation only.
 
-Frontend available at `http://localhost:5173`.
+## Repository map
 
-### Run Tests
+- `backend/app/evaluation/`: preparation, generation, baseline/mutation evaluation, durable store and worker.
+- `backend/app/routes/evaluations.py`: curated evaluation API.
+- `backend/evaluation_migrations/`: explicit evaluation schema migrations.
+- `frontend/src/pages/EvaluationsPage.tsx`: evaluation UI.
+- `benchmarks/subjects/`: five pinned first-party synthetic subjects and fixtures.
+- `benchmarks/results/phase5-offline/`: small checked-in measurement summaries.
+- `docker/`, `compose.yaml`: runner and local application stack.
+- `docs/`: contracts, methodology, operations and validation evidence.
 
-```bash
-cd backend
-python -m pytest tests/ -v
-```
-
-## Project Structure
-
-```
-specguard/
-├── backend/
-│   ├── app/
-│   │   ├── main.py              # FastAPI application
-│   │   ├── config.py            # Environment settings (Pydantic Settings)
-│   │   ├── database.py          # Async SQLAlchemy setup
-│   │   ├── models/              # SQLAlchemy ORM models
-│   │   ├── schemas/             # Pydantic schemas
-│   │   │   ├── api.py           # Request/response schemas
-│   │   │   └── ai_output.py     # AI output validation schemas
-│   │   ├── routes/              # API endpoints (projects, documents, generation, test suites)
-│   │   ├── services/
-│   │   │   ├── ai_client.py     # OpenAI wrapper with retry logic
-│   │   │   ├── pipeline.py      # Multi-stage pipeline orchestrator
-│   │   │   ├── file_parser.py   # Document ingestion (.txt, .md, .pdf)
-│   │   │   └── scorer.py        # Coverage scoring algorithm
-│   │   └── prompts/             # AI prompt templates
-│   └── tests/                   # pytest suite
-├── frontend/
-│   └── src/
-│       ├── api/client.ts        # Typed API client
-│       ├── types/index.ts       # TypeScript type definitions
-│       ├── components/          # ScoreRing, TestCaseCard, CreateProjectModal
-│       └── pages/               # ProjectsPage, ProjectPage, DocumentPage
-└── sample_docs/                 # Example specs for testing
-```
-
-## License
-
-MIT
+MIT — see [LICENSE](LICENSE).

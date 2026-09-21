@@ -1,0 +1,85 @@
+import errno
+import os
+from pathlib import Path
+import socket
+
+import pytest
+
+
+def test_privileges_and_cgroups():
+    assert os.getuid() == 65532 and os.getgid() == 65532
+    status = dict(line.split(":", 1) for line in Path("/proc/self/status").read_text().splitlines() if ":" in line)
+    assert int(status["CapEff"].strip(), 16) == 0
+    assert status["NoNewPrivs"].strip() == "1"
+    assert status["Seccomp"].strip() == "2"
+    assert Path("/sys/fs/cgroup/pids.max").read_text().strip() == "32"
+    assert int(Path("/sys/fs/cgroup/memory.max").read_text()) == 128 * 1024 * 1024
+    assert int(Path("/sys/fs/cgroup/memory.swap.max").read_text()) == 0
+    quota, period = map(int, Path("/sys/fs/cgroup/cpu.max").read_text().split())
+    assert quota / period == 0.5
+
+
+def test_environment_and_host_assets_absent():
+    assert "SPECGUARD_HOST_SENTINEL" not in os.environ
+    assert "OPENAI_API_KEY" not in os.environ
+    assert not any(name.upper().endswith("_PROXY") for name in os.environ)
+    assert not Path("/var/run/docker.sock").exists()
+    assert not Path("/target/.git").exists()
+    assert not Path("/target/tests").exists()
+    assert not Path("/dev/sda").exists()
+    assert b"SPECGUARD_HOST_SENTINEL" not in Path("/proc/1/environ").read_bytes()
+
+
+def test_http_and_dns_cannot_leave_container():
+    # Some kernels expose dormant tunnel interfaces even with network=none.
+    active = {name for _, name in socket.if_nameindex()
+              if int(Path(f"/sys/class/net/{name}/flags").read_text(), 16) & 1}
+    assert active == {"lo"}
+    with socket.socket() as http:
+        http.settimeout(1)
+        with pytest.raises(OSError):
+            http.connect(("1.1.1.1", 80))
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as dns:
+        dns.settimeout(1)
+        with pytest.raises(OSError):
+            dns.sendto(b"\x00" * 12, ("1.1.1.1", 53))
+
+
+def test_read_only_inputs_and_root():
+    for path in ("/tmp/escape", "/target/src/marker.py", "/tests/test_case.py", "/proc/sys/kernel/hostname"):
+        with pytest.raises(OSError):
+            Path(path).write_text("forbidden")
+    scratch = Path("/scratch/allowed")
+    scratch.write_text("allowed")
+    assert scratch.read_text() == "allowed"
+    scratch.unlink()
+
+
+def test_file_size_limit():
+    path = Path("/scratch/large")
+    try:
+        with pytest.raises(OSError) as caught:
+            path.write_bytes(b"x" * (2 * 1024 * 1024))
+        assert caught.value.errno == errno.EFBIG
+        assert path.stat().st_size <= 1024 * 1024
+    finally:
+        path.unlink(missing_ok=True)
+
+
+def test_scratch_space_limit():
+    paths = []
+    limited = False
+    try:
+        for index in range(64):
+            path = Path(f"/scratch/fill-{index}")
+            paths.append(path)
+            try:
+                path.write_bytes(b"x" * (512 * 1024))
+            except OSError as error:
+                assert error.errno == errno.ENOSPC
+                limited = True
+                break
+        assert limited
+    finally:
+        for path in paths:
+            path.unlink(missing_ok=True)

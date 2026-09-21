@@ -11,7 +11,7 @@ from app.schemas.ai_output import (
     ExtractedRequirement,
     RequirementExtractionResult,
     GeneratedTestCase,
-    TestGenerationResult,
+    TestGenerationResult as GenerationResult,
 )
 
 
@@ -189,7 +189,7 @@ class TestGeneratedTestCase:
 
 class TestTestGenerationResult:
     def test_valid_result(self):
-        result = TestGenerationResult(
+        result = GenerationResult(
             test_cases=[
                 {
                     "title": "Test valid login flow",
@@ -206,4 +206,4 @@ class TestTestGenerationResult:
 
     def test_rejects_empty_test_cases(self):
         with pytest.raises(ValidationError):
-            TestGenerationResult(test_cases=[])
+            GenerationResult(test_cases=[])

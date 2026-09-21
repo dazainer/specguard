@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "path": ".specguard/generated_tests/test_access_policy.py",
+      "content": "from src.access_policy import can_edit\ndef test_admin():\n    assert can_edit(\"admin\",False,False) is True\ndef test_owner():\n    assert can_edit(\"editor\",True,False) is True\ndef test_lock():\n    assert can_edit(\"admin\",True,True) is False\n"
+    }
+  ],
+  "assumptions": [
+    "Handwritten deterministic fixture, not live model output."
+  ],
+  "targeted_requirements": [
+    "For string role and boolean owner/locked, a locked record cannot be edited by anyone. Otherwise admins can edit regardless of ownership, editors can edit only records they own, and all other roles are denied. Return a bool. Role names are case-sensitive. Other input types are outside this contract."
+  ]
+}

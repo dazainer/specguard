@@ -1,0 +1,284 @@
+[
+  {
+    "trial": 1,
+    "mode": "cold",
+    "status": "completed",
+    "timings": {
+      "generation": 0.0010946670081466436,
+      "generated_baseline": 2.0221422920003533,
+      "native_baseline": 1.9931525000138208,
+      "inventory": 0.6799764590105042,
+      "native_mutation": 33.237976417003665,
+      "generated_mutation": 30.53727745800279,
+      "total": 68.70735370798502
+    },
+    "cache": {
+      "hit": false,
+      "key": "9c52c31ae3717f7ce7aa58dc64be8864f56d6799c2260c54a96c6dfa1678a733"
+    },
+    "native": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 40,
+      "survived": 12,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.7692307692307693,
+      "duration_seconds": 33.237976417003665
+    },
+    "generated": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 29,
+      "survived": 23,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.5576923076923077,
+      "duration_seconds": 30.53727745800279
+    }
+  },
+  {
+    "trial": 1,
+    "mode": "warm",
+    "status": "completed",
+    "timings": {
+      "generation": 0.0010252500069327652,
+      "generated_baseline": 1.8412463340209797,
+      "native_baseline": 1.7258932080003433,
+      "inventory": 0.6198424589820206,
+      "native_mutation": 0.0034630000009201467,
+      "generated_mutation": 33.25363600003766,
+      "total": 37.7145775409881
+    },
+    "cache": {
+      "hit": true,
+      "key": "9c52c31ae3717f7ce7aa58dc64be8864f56d6799c2260c54a96c6dfa1678a733",
+      "source_run": "1c13c122-62b2-4136-9d05-392c2c36f62f",
+      "original_duration_seconds": 33.237976417003665
+    },
+    "native": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 40,
+      "survived": 12,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.7692307692307693,
+      "duration_seconds": 0.0034630000009201467
+    },
+    "generated": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 29,
+      "survived": 23,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.5576923076923077,
+      "duration_seconds": 33.25363600003766
+    }
+  },
+  {
+    "trial": 2,
+    "mode": "cold",
+    "status": "completed",
+    "timings": {
+      "generation": 0.001303000026382506,
+      "generated_baseline": 4.292262083967216,
+      "native_baseline": 2.2763028749614023,
+      "inventory": 0.7877055410062894,
+      "native_mutation": 37.364314583013766,
+      "generated_mutation": 36.12546691700118,
+      "total": 81.45062862499617
+    },
+    "cache": {
+      "hit": false,
+      "key": "9c52c31ae3717f7ce7aa58dc64be8864f56d6799c2260c54a96c6dfa1678a733"
+    },
+    "native": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 40,
+      "survived": 12,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.7692307692307693,
+      "duration_seconds": 37.364314583013766
+    },
+    "generated": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 29,
+      "survived": 23,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.5576923076923077,
+      "duration_seconds": 36.12546691700118
+    }
+  },
+  {
+    "trial": 2,
+    "mode": "warm",
+    "status": "completed",
+    "timings": {
+      "generation": 0.0011986250174231827,
+      "generated_baseline": 2.407859082974028,
+      "native_baseline": 2.583297500037588,
+      "inventory": 1.0347400000318885,
+      "native_mutation": 0.004429791995789856,
+      "generated_mutation": 42.27857612504158,
+      "total": 48.600788499985356
+    },
+    "cache": {
+      "hit": true,
+      "key": "9c52c31ae3717f7ce7aa58dc64be8864f56d6799c2260c54a96c6dfa1678a733",
+      "source_run": "cd659500-081d-4630-80f3-50dca3c61e5a",
+      "original_duration_seconds": 37.364314583013766
+    },
+    "native": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 40,
+      "survived": 12,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.7692307692307693,
+      "duration_seconds": 0.004429791995789856
+    },
+    "generated": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 29,
+      "survived": 23,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.5576923076923077,
+      "duration_seconds": 42.27857612504158
+    }
+  },
+  {
+    "trial": 3,
+    "mode": "cold",
+    "status": "completed",
+    "timings": {
+      "generation": 0.007217374979518354,
+      "generated_baseline": 2.1239651669748127,
+      "native_baseline": 2.118148417037446,
+      "inventory": 0.7197319999686442,
+      "native_mutation": 35.75786470796447,
+      "generated_mutation": 40.12926304200664,
+      "total": 81.15245116699953
+    },
+    "cache": {
+      "hit": false,
+      "key": "9c52c31ae3717f7ce7aa58dc64be8864f56d6799c2260c54a96c6dfa1678a733"
+    },
+    "native": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 40,
+      "survived": 12,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.7692307692307693,
+      "duration_seconds": 35.75786470796447
+    },
+    "generated": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 29,
+      "survived": 23,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.5576923076923077,
+      "duration_seconds": 40.12926304200664
+    }
+  },
+  {
+    "trial": 3,
+    "mode": "warm",
+    "status": "completed",
+    "timings": {
+      "generation": 0.0099015420419164,
+      "generated_baseline": 1.7875254999962635,
+      "native_baseline": 1.852248665993102,
+      "inventory": 0.6452337499940768,
+      "native_mutation": 0.0039297910407185555,
+      "generated_mutation": 38.778790792042855,
+      "total": 43.35988783300854
+    },
+    "cache": {
+      "hit": true,
+      "key": "9c52c31ae3717f7ce7aa58dc64be8864f56d6799c2260c54a96c6dfa1678a733",
+      "source_run": "fd644aad-a427-4afc-8704-65e0216bfa84",
+      "original_duration_seconds": 35.75786470796447
+    },
+    "native": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 40,
+      "survived": 12,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.7692307692307693,
+      "duration_seconds": 0.0039297910407185555
+    },
+    "generated": {
+      "inventory_sha256": "3397da563176d0ad9f4e556e70c3b30f494dcc85f7e071ec46f013d8579cd6c1",
+      "configuration_sha256": "9798618a1536f69e901d31127b47bd005753d91021358592edf84da82770fe9f",
+      "generated": 52,
+      "killed": 29,
+      "survived": 23,
+      "timed_out": 0,
+      "invalid": 0,
+      "errors": 0,
+      "suspicious": 0,
+      "denominator": 52,
+      "score": 0.5576923076923077,
+      "duration_seconds": 38.778790792042855
+    }
+  }
+]

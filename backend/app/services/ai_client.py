@@ -12,7 +12,7 @@ import json
 import logging
 from typing import TypeVar, Type
 
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, APIConnectionError, APIStatusError
 from pydantic import BaseModel, ValidationError
 
 from app.config import get_settings
@@ -44,7 +44,7 @@ class AIClientError(Exception):
 class AIClient:
     def __init__(self):
         settings = get_settings()
-        self.client = AsyncOpenAI(api_key=settings.openai_api_key)
+        self.client = AsyncOpenAI(api_key=settings.openai_api_key, max_retries=0)
         self.model = settings.ai_model
         self.temperature = settings.ai_temperature
         self.max_retries = settings.ai_max_retries
@@ -87,48 +87,41 @@ class AIClient:
                     ],
                 )
 
-                raw_content = response.choices[0].message.content
-                if not raw_content:
+                raw_content = (
+                    response.choices[0].message.content if response.choices else None
+                )
+                if not raw_content or not raw_content.strip():
                     raise AIClientError("Empty response from AI model")
 
-                # Parse JSON
-                try:
-                    raw_json = json.loads(raw_content)
-                except json.JSONDecodeError as e:
-                    raise AIClientError(f"AI returned invalid JSON: {e}")
+                validated = output_schema.model_validate(json.loads(raw_content))
+                _stats["first_pass" if attempt == 0 else "retries"] += 1
+                logger.info("Validated %s on attempt %s", output_schema.__name__, attempt + 1)
+                return validated
 
-                # Validate with Pydantic
-                try:
-                    validated = output_schema.model_validate(raw_json)
-
-                    if attempt == 0:
-                        _stats["first_pass"] += 1
-                        logger.info(f"Validation passed on first attempt for {output_schema.__name__}")
-                    else:
-                        _stats["retries"] += 1
-                        logger.info(f"Validation passed on retry {attempt} for {output_schema.__name__}")
-
-                    return validated
-
-                except ValidationError as e:
+            except (AIClientError, json.JSONDecodeError, ValidationError) as e:
+                # Do not echo model content into logs or validation feedback.
+                if isinstance(e, ValidationError):
+                    last_error = json.dumps(e.errors(include_input=False, include_url=False), default=str)
+                elif isinstance(e, json.JSONDecodeError):
+                    last_error = "AI returned invalid JSON"
+                else:
                     last_error = str(e)
-                    logger.warning(
-                        f"Validation failed (attempt {attempt + 1}/{1 + self.max_retries}) "
-                        f"for {output_schema.__name__}: {last_error}"
-                    )
-
-                    # Append error feedback for retry
-                    current_user_prompt = user_prompt + RETRY_SUFFIX.format(errors=last_error)
-
-            except AIClientError:
-                raise
+                current_user_prompt = user_prompt + RETRY_SUFFIX.format(errors=last_error)
+                logger.warning("Invalid %s output on attempt %s", output_schema.__name__, attempt + 1)
+            except APIConnectionError:
+                last_error = "AI provider connection failed"
+            except APIStatusError as e:
+                last_error = f"AI provider returned HTTP {e.status_code}"
+                if e.status_code not in {408, 409, 429} and e.status_code < 500:
+                    break
             except Exception as e:
-                last_error = str(e)
-                logger.error(f"AI call error (attempt {attempt + 1}): {last_error}")
+                # Unexpected errors are terminal; keep provider payloads out of API errors.
+                last_error = f"Unexpected AI client error: {type(e).__name__}"
+                break
 
         # All retries exhausted
         _stats["failures"] += 1
         raise AIClientError(
-            f"Failed to generate valid output after {1 + self.max_retries} attempts. "
+            f"Failed to generate valid output after {attempt + 1} attempts. "
             f"Last error: {last_error}"
         )

@@ -1,0 +1,49 @@
+schema_version: 1
+language: python
+repository:
+  bundle: target.bundle
+  commit: b9f0b1517ba4012a629dd9b33a2ef4873c14c74b
+specification:
+  path: spec.md
+environment:
+  python_version: '3.12'
+  dependency_lock: requirements.lock
+  install_command: []
+context:
+  mode: spec_plus_code
+  interface_path: interface.md
+  source_files:
+  - src/intervals.py
+tests:
+  native_paths:
+  - tests
+  generated_path: .specguard/generated_tests
+  baseline_command:
+  - python
+  - -m
+  - pytest
+  - -q
+  timeout_seconds: 30
+  repeat_count: 2
+mutation:
+  source_paths:
+  - src/intervals.py
+  excluded_paths: []
+  timeout_seconds: 5
+limits:
+  memory_mb: 1024
+  cpus: 1.0
+  pids: 128
+  output_kb: 1024
+  scratch_mb: 128
+  file_size_mb: 16
+artifacts:
+  max_files: 10
+  max_file_bytes: 65536
+  max_total_bytes: 262144
+generation:
+  provider: fixture
+  model: handwritten-fixture-v1
+  prompt_version: contract-v1
+  temperature: 0.0
+  seed: null

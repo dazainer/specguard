@@ -1,0 +1,1 @@
+"""Deterministic reservation-pricing benchmark."""

@@ -1,0 +1,5 @@
+import os
+import signal
+
+def test_interpreter_crash():
+    os.kill(os.getpid(), signal.SIGSEGV)

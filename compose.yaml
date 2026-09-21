@@ -1,0 +1,65 @@
+# Local/private deployment. The API has no Docker socket; only the trusted
+# worker controls Docker. Runner containers retain the Phase 2 controls.
+x-app: &app
+  build:
+    context: .
+    dockerfile: docker/app/Dockerfile
+  environment: &environment
+    DATABASE_URL: sqlite+aiosqlite:////data/manual.db
+    EVALUATION_DB: /data/evaluations.db
+    EVALUATION_ARTIFACTS: /artifacts/web
+    EVALUATION_SUBJECTS: /app/benchmarks/subjects
+    EVALUATION_RUNNER_IMAGE: ${EVALUATION_RUNNER_IMAGE:?Set the full local runner image ID}
+    FRONTEND_URL: http://localhost:8080
+    OPENAI_API_KEY: ""
+  volumes:
+    - evaluation-data:/data
+    - ${SPECGUARD_WORKSPACE}/benchmark-runs:/artifacts
+
+services:
+  migrate:
+    <<: *app
+    command: ["python", "-m", "app.evaluation.migrate"]
+  api:
+    <<: *app
+    ports: ["127.0.0.1:${SPECGUARD_API_PORT:-8000}:8000"]
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  worker:
+    <<: *app
+    command: ["python", "-m", "app.evaluation.worker"]
+    environment:
+      <<: *environment
+      TMPDIR: ${SPECGUARD_WORKSPACE:?Set the absolute repository path}/.specguard-data/tmp
+    volumes:
+      - evaluation-data:/data
+      - ${SPECGUARD_WORKSPACE}/benchmark-runs:/artifacts
+      # Staged files must have identical paths in worker and daemon host.
+      - ${SPECGUARD_WORKSPACE}/.specguard-data/tmp:${SPECGUARD_WORKSPACE}/.specguard-data/tmp
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "python", "-m", "app.evaluation.worker", "--health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    ports: ["127.0.0.1:${SPECGUARD_WEB_PORT:-8080}:80"]
+    depends_on:
+      api: {condition: service_healthy}
+
+volumes:
+  # Keep SQLite WAL/shared-memory files on the Linux filesystem, not a
+  # Docker Desktop host bind mount. API and worker share this volume.
+  evaluation-data:

@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.database import init_db
-from app.routes import projects, documents, generation, test_suites
+from app.routes import projects, documents, generation, test_suites, evaluations
 from app.services.ai_client import get_validation_stats
 
 logging.basicConfig(level=logging.INFO)
@@ -52,6 +52,7 @@ app.include_router(projects.router)
 app.include_router(documents.router)
 app.include_router(generation.router)
 app.include_router(test_suites.router)
+app.include_router(evaluations.router)
 
 
 @app.get("/api/health")

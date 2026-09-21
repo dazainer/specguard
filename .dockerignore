@@ -1,0 +1,15 @@
+.git
+.env*
+backend/.env*
+backend/.venv
+backend/*.db*
+backend/.specguard-data
+frontend/.env*
+frontend/node_modules
+frontend/dist
+benchmark-runs
+.specguard-data
+.specguard-cache
+**/__pycache__
+**/.pytest_cache
+**/*.pyc

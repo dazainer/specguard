@@ -283,3 +283,41 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
 
 .flex-between { display: flex; align-items: center; justify-content: space-between; }
+
+/* Executable evaluation surfaces */
+.evaluation-page { display: grid; gap: 20px; }
+.evaluation-page h1 { font-size: clamp(24px, 3vw, 36px); letter-spacing: -.03em; }
+.evaluation-page h2 { font-size: 20px; margin-top: 12px; }
+.evaluation-page p { color: var(--text-secondary); }
+.evaluation-page a { color: var(--accent); }
+.evaluation-eyebrow { color: var(--accent); font: 12px var(--font-mono); letter-spacing: .12em; }
+.evaluation-heading { display: grid; gap: 12px; }
+.evaluation-notice { padding: 14px 18px; background: var(--amber-dim); border-left: 3px solid var(--amber); }
+.evaluation-error { padding: 14px 18px; background: var(--red-dim); border-left: 3px solid var(--red); color: var(--text-primary) !important; }
+.evaluation-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.evaluation-panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; display: grid; align-content: start; gap: 12px; }
+.evaluation-page button, .evaluation-page select { font: inherit; border-radius: var(--radius); border: 1px solid var(--border); padding: 9px 12px; color: var(--text-primary); background: var(--bg-tertiary); }
+.evaluation-page button { cursor: pointer; }
+.evaluation-page button:hover:not(:disabled) { border-color: var(--accent); }
+.evaluation-page button:disabled { opacity: .45; cursor: not-allowed; }
+.evaluation-page :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.evaluation-check { display: flex; align-items: start; gap: 10px; color: var(--text-secondary); }
+.evaluation-check input { margin-top: 5px; }
+.evaluation-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
+.evaluation-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+.evaluation-page table { border-collapse: collapse; width: 100%; font-size: 13px; }
+.evaluation-page th, .evaluation-page td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.evaluation-page th { color: var(--text-secondary); font-weight: 500; }
+.evaluation-page caption { text-align: left; padding: 12px; color: var(--text-primary); }
+.evaluation-state { font: 12px var(--font-mono); padding: 5px 9px; border: 1px solid var(--border); border-radius: 4px; }
+.evaluation-state.completed { color: var(--green); border-color: var(--green); }
+.evaluation-state.failed, .evaluation-state.cancelled { color: var(--amber); }
+.evaluation-note { font-size: 13px; }
+.evaluation-page details { border: 1px solid var(--border); padding: 14px; border-radius: var(--radius); min-width: 0; }
+.evaluation-page summary { cursor: pointer; overflow-wrap: anywhere; }
+.evaluation-code { background: var(--bg-surface); font: 12px/1.7 var(--font-mono); padding: 16px; margin-top: 12px; max-height: 420px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.evaluation-page ol { margin: 12px 24px; color: var(--text-secondary); }
+.evaluation-page dl > div { display: flex; gap: 12px; margin: 6px; }
+.evaluation-artifact { display: grid; gap: 8px; font-size: 13px; overflow-wrap: anywhere; }
+.evaluation-artifact code { font-size: 11px; color: var(--text-secondary); }
+@media (max-width: 720px) { .evaluation-grid { grid-template-columns: 1fr; } .app-header { height: auto; min-height: 72px; padding: 16px; flex-wrap: wrap; gap: 12px; } .app-logo-tag { display: none; } }

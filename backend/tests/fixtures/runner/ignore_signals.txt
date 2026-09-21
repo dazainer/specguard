@@ -1,0 +1,6 @@
+import signal
+
+def test_ignores_termination():
+    signal.signal(signal.SIGTERM, signal.SIG_IGN)
+    while True:
+        pass

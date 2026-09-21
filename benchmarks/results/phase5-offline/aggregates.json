@@ -1,0 +1,122 @@
+[
+  {
+    "subject": "access_policy",
+    "provider": "fixture",
+    "strategy": "contract-v1",
+    "attempted": 2,
+    "completed": 2,
+    "score_n": 2,
+    "score_mean": 0.8571428571428571,
+    "score_variance": 0.0,
+    "duration_mean": 15.409736104513286,
+    "duration_variance": 4.2191139564806175
+  },
+  {
+    "subject": "access_policy",
+    "provider": "fixture",
+    "strategy": "boundary-v1",
+    "attempted": 2,
+    "completed": 2,
+    "score_n": 2,
+    "score_mean": 0.8571428571428571,
+    "score_variance": 0.0,
+    "duration_mean": 9.853321603994118,
+    "duration_variance": 0.4116009709664853
+  },
+  {
+    "subject": "first_subject",
+    "provider": "fixture",
+    "strategy": "contract-v1",
+    "attempted": 2,
+    "completed": 2,
+    "score_n": 2,
+    "score_mean": 0.5576923076923077,
+    "score_variance": 0.0,
+    "duration_mean": 70.1514152494783,
+    "duration_variance": 354.22932894421905
+  },
+  {
+    "subject": "first_subject",
+    "provider": "fixture",
+    "strategy": "boundary-v1",
+    "attempted": 2,
+    "completed": 2,
+    "score_n": 2,
+    "score_mean": 0.5576923076923077,
+    "score_variance": 0.0,
+    "duration_mean": 38.05331389550702,
+    "duration_variance": 1.3738009750965603
+  },
+  {
+    "subject": "intervals",
+    "provider": "fixture",
+    "strategy": "contract-v1",
+    "attempted": 2,
+    "completed": 2,
+    "score_n": 2,
+    "score_mean": 0.5,
+    "score_variance": 0.0,
+    "duration_mean": 11.076485791534651,
+    "duration_variance": 2.882267345520998
+  },
+  {
+    "subject": "intervals",
+    "provider": "fixture",
+    "strategy": "boundary-v1",
+    "attempted": 2,
+    "completed": 2,
+    "score_n": 2,
+    "score_mean": 0.5,
+    "score_variance": 0.0,
+    "duration_mean": 7.93149608297972,
+    "duration_variance": 0.010792933045124884
+  },
+  {
+    "subject": "pagination",
+    "provider": "fixture",
+    "strategy": "contract-v1",
+    "attempted": 2,
+    "completed": 2,
+    "score_n": 2,
+    "score_mean": 0.6153846153846154,
+    "score_variance": 0.0,
+    "duration_mean": 15.998051458504051,
+    "duration_variance": 16.060157107021006
+  },
+  {
+    "subject": "pagination",
+    "provider": "fixture",
+    "strategy": "boundary-v1",
+    "attempted": 2,
+    "completed": 2,
+    "score_n": 2,
+    "score_mean": 0.6153846153846154,
+    "score_variance": 0.0,
+    "duration_mean": 12.51982079152367,
+    "duration_variance": 0.0009248568073018987
+  },
+  {
+    "subject": "shipping",
+    "provider": "fixture",
+    "strategy": "contract-v1",
+    "attempted": 2,
+    "completed": 2,
+    "score_n": 2,
+    "score_mean": 0.23076923076923078,
+    "score_variance": 0.0,
+    "duration_mean": 16.512112604017602,
+    "duration_variance": 21.622994260392993
+  },
+  {
+    "subject": "shipping",
+    "provider": "fixture",
+    "strategy": "boundary-v1",
+    "attempted": 2,
+    "completed": 2,
+    "score_n": 2,
+    "score_mean": 0.23076923076923078,
+    "score_variance": 0.0,
+    "duration_mean": 13.794702645478537,
+    "duration_variance": 2.2748485427813714
+  }
+]

@@ -1,0 +1,2 @@
+# Reservation-pricing implementation has no third-party runtime dependencies.
+# The execution runner will supply pinned Python 3.12 and pytest in Phase 2.

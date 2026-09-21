@@ -1,0 +1,15 @@
+{
+  "engine": "mutmut",
+  "version": "2.4.4",
+  "mutants": [
+    {
+      "content": "\"\"\"Integer-only reservation pricing and cancellation refunds.\"\"\"\n\n\ndef _integer(value, name, minimum, maximum):\n    if type(value) is not int:\n        raise TypeError(f\"{name} must be an integer\")\n    if not minimum <= value <= maximum:\n        raise ValueError(f\"{name} is out of range\")\n\n\ndef quote(nights: int, nightly_rate_cents: int, guests: int = 2, member: bool = False) -> int:\n    _integer(nights, \"nights\", 1, 30)\n    _integer(nightly_rate_cents, \"nightly_rate_cents\", 0, 100000)\n    _integer(guests, \"guests\", 1, 6)\n    if type(member) is not bool:\n        raise TypeError(\"member must be a boolean\")\n    total = nights * (nightly_rate_cents + max(guests - 2, 0) * 2000)\n    if nights >= 7:\n        total = total * 90 // 100\n    if member:\n        total = total * 95 // 100\n    return total\n\n\ndef cancellation_refund(total_cents: int, days_before: int) -> int:\n    _integer(total_cents, \"total_cents\", 0, 10000000)\n    _integer(days_before, \"days_before\", 0, 365)\n    if days_before >= 7:\n        return total_cents\n    if days_before >= 2:\n        return total_cents // 2\n    return 0\n",
+      "diff": "--- src/reservations.py\n+++ src/reservations.py\n@@ -8,7 +8,7 @@\n         raise ValueError(f\"{name} is out of range\")\n \n \n-def quote(nights: int, nightly_rate_cents: int, guests: int = 1, member: bool = False) -> int:\n+def quote(nights: int, nightly_rate_cents: int, guests: int = 2, member: bool = False) -> int:\n     _integer(nights, \"nights\", 1, 30)\n     _integer(nightly_rate_cents, \"nightly_rate_cents\", 0, 100000)\n     _integer(guests, \"guests\", 1, 6)\n",
+      "id": "214d51bdcc605a5134c626e070c63a4832d8dafa1d6564a46a9f06425bf1f5ab",
+      "line": 11,
+      "operator": "number",
+      "source_file": "src/reservations.py",
+      "valid": true
+    }
+  ]
+}

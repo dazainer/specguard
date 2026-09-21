@@ -1,0 +1,6 @@
+import os
+
+def test_output_flood():
+    for _ in range(256):
+        os.write(1, b"x" * 4096)
+        os.write(2, b"y" * 4096)

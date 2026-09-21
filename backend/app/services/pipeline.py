@@ -14,9 +14,9 @@ don't corrupt data from previous stages.
 import logging
 import time
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select
 
-from app.models.models import Document, Requirement, TestSuite, TestCase
+from app.models.models import Document, Project, Requirement, TestSuite, TestCase
 from app.services.ai_client import AIClient, AIClientError
 from app.services.scorer import compute_coverage_score
 from app.schemas.ai_output import RequirementExtractionResult, TestGenerationResult
@@ -45,24 +45,19 @@ async def run_pipeline(
     This is called as a background task. It updates the test_suite
     status as it progresses.
     """
-    start_time = time.time()
-    ai = AIClient()
-
-    # Load document
-    doc = await db.get(Document, document_id)
-    if not doc:
-        raise PipelineError(f"Document {document_id} not found")
-
+    start_time = time.monotonic()
     suite = await db.get(TestSuite, test_suite_id)
     if not suite:
         raise PipelineError(f"TestSuite {test_suite_id} not found")
 
-    # Load project name for context (explicit query — async SQLAlchemy can't lazy-load)
-    from app.models.models import Project
-    project = await db.get(Project, doc.project_id)
-    project_name = project.name if project else "Unknown Project"
-
     try:
+        ai = AIClient()
+        doc = await db.get(Document, document_id)
+        if not doc:
+            raise PipelineError(f"Document {document_id} not found")
+        # Explicit query: async SQLAlchemy cannot lazy-load this relationship.
+        project = await db.get(Project, doc.project_id)
+        project_name = project.name if project else "Unknown Project"
         # ─── Stage 2: Extract Requirements ───
         logger.info(f"Stage 2: Extracting requirements from document {document_id}")
 
@@ -140,6 +135,9 @@ async def run_pipeline(
 
         logger.info(f"Generated {len(all_test_cases)} test cases total")
 
+        if not all_test_cases:
+            raise PipelineError("No test cases generated: all requirements failed")
+
         # ─── Stage 4: Score and Finalize ───
         logger.info("Stage 4: Computing coverage score")
 
@@ -154,7 +152,7 @@ async def run_pipeline(
             requirement_ids_with_tests=requirement_ids_with_tests,
         )
 
-        elapsed = round(time.time() - start_time, 2)
+        elapsed = round(time.monotonic() - start_time, 2)
 
         suite.status = "completed"
         suite.coverage_score = scores["overall"]
@@ -162,6 +160,8 @@ async def run_pipeline(
         suite.metadata_ = {
             "total_requirements": len(requirements),
             "total_test_cases": len(all_test_cases),
+            "requirements_with_tests": len(requirement_ids_with_tests),
+            "failed_requirements": len(requirements) - len(requirement_ids_with_tests),
             "generation_time_seconds": elapsed,
             "model": ai.model,
         }
@@ -171,6 +171,11 @@ async def run_pipeline(
 
     except Exception as e:
         logger.error(f"Pipeline failed: {e}")
+        # Recover failed transactions and preserve the previous generation on failure.
+        await db.rollback()
+        suite = await db.get(TestSuite, test_suite_id)
+        if not suite:
+            raise
         suite.status = "failed"
         suite.error_message = str(e)
         await db.commit()

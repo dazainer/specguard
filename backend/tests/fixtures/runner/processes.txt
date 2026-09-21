@@ -1,0 +1,26 @@
+import errno
+import os
+import signal
+
+def test_pid_limit():
+    children = []
+    limited = False
+    try:
+        for _ in range(128):
+            try:
+                pid = os.fork()
+            except OSError as error:
+                assert error.errno == errno.EAGAIN
+                limited = True
+                break
+            if pid == 0:
+                signal.pause()
+                os._exit(0)
+            children.append(pid)
+        assert limited and len(children) < 32
+        print("PID limit prevented further forks")
+    finally:
+        for pid in children:
+            os.kill(pid, signal.SIGKILL)
+        for pid in children:
+            os.waitpid(pid, 0)

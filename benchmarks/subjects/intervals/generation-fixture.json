@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "path": ".specguard/generated_tests/test_intervals.py",
+      "content": "from src.intervals import overlap_length\ndef test_overlap():\n    assert overlap_length(0,5,2,8) == 3\ndef test_touch():\n    assert overlap_length(0,5,5,9) == 0\ndef test_empty():\n    assert overlap_length(0,0,0,3) == 0\n"
+    }
+  ],
+  "assumptions": [
+    "Handwritten deterministic fixture, not live model output."
+  ],
+  "targeted_requirements": [
+    "For integer endpoints of two half-open intervals, return the nonnegative length of their intersection. Empty intervals and intervals that merely touch have overlap zero. Negative endpoints are allowed. Raise ValueError if either end is strictly less than its corresponding start. Other types are outside the contract."
+  ]
+}

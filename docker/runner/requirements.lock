@@ -1,0 +1,5 @@
+# Complete runtime dependency set for Python 3.12; universal wheels only.
+iniconfig==2.3.0 --hash=sha256:f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12
+packaging==24.2 --hash=sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759
+pluggy==1.6.0 --hash=sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746
+pytest==8.3.0 --hash=sha256:a1b30492f2676b476266a87f6551345fb25c0484fb6d09c86aa2eb07b5f71c2f

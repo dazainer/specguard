@@ -176,7 +176,7 @@ async def export_test_suite(
         lines = [
             f"# Test Suite v{suite.version}",
             f"**Document:** {doc.filename if doc else 'Unknown'}",
-            f"**Coverage Score:** {suite.coverage_score or 'N/A'}",
+            f"**Coverage Score:** {suite.coverage_score if suite.coverage_score is not None else 'N/A'}",
             "",
         ]
         for i, tc in enumerate(test_cases, 1):

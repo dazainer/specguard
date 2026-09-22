@@ -13,7 +13,7 @@ The original backend had 23 passing tests, a pytest-asyncio configuration warnin
 | Fresh temporary environment: Python 3.12 venv and `python -m pip install -r requirements.txt` | Passed |
 | Fresh environment: `python -m pytest -q` | 93 passed; no warnings |
 | Fresh environment: `python -m pip check` | No broken requirements |
-| Fresh frontend: `npm ci --cache /private/tmp/specguard-phase0-npm-cache --no-audit --no-fund` | Installed all 72 locked packages |
+| Fresh frontend: `npm ci --no-audit --no-fund (isolated temporary cache)` | Installed all 72 locked packages |
 | Fresh frontend: `VITE_API_DOCS_URL=https://docs.specguard.invalid/custom npm run build` | Passed; custom URL verified in bundle and localhost docs URL absent |
 | Fresh backend: `python -m uvicorn app.main:app --host 127.0.0.1 --port 18765` | Startup, health, API docs, project create/delete, sample document upload, and statistics passed |
 | `git diff --check` | Passed |

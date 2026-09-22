@@ -1,0 +1,25 @@
+{
+  "image": "sha256:ec2b2941caf0c74f65c5b25ba5ef69a6e7995c9f41d61c350109632945264152",
+  "host_python": "3.12.13",
+  "host_platform": "macOS-14.5-arm64-arm-64bit",
+  "engine": "mutmut-2.4.4",
+  "trials": 1,
+  "strategies": [
+    "contract-v1"
+  ],
+  "provider": "fixture",
+  "model": "handwritten-fixture-v1",
+  "native_cache_enabled": false,
+  "implementation_sha256": "4543bc6f0c7db761add38e95703202b14fd46d3d6c5b2da48f07966f83c274fd",
+  "runtime": {
+    "pydantic": "2.9.0",
+    "PyYAML": "6.0.3",
+    "git": "git version 2.52.0",
+    "preparation_python": "3.12.13",
+    "docker": "29.5.3",
+    "platform": "linux/arm64",
+    "python": "3.12.13",
+    "pytest": "8.3.0",
+    "mutmut": "2.4.4"
+  }
+}

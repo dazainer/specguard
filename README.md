@@ -2,7 +2,7 @@
 
 Executable test evaluation from specifications: validate pytest artifacts, require repeated passing baselines, then compare native and generated suites against the **same pinned mutation inventory**.
 
-The local web product uses five curated subjects and handwritten fixtures. The CLI also has a live-generation adapter, but all published verification is offline; fixture results do not establish AI test quality.
+The local web product uses five curated subjects and handwritten fixtures. The CLI also has a live-generation adapter, but the published five-subject comparison is offline; fixture results do not establish AI test quality.
 
 ## Measured benchmark
 
@@ -34,8 +34,8 @@ Open **http://localhost:8080**. Register `access_policy`, leave **Baseline only*
 
 API documentation: http://localhost:8000/docs. `GET /api/health` checks the API; `GET /api/evaluations/ready` checks the migrated database, worker heartbeat, and image configuration. Stop with `docker compose down`; persisted data stays on disk. The [operations guide](docs/evaluation-operations.md) covers development servers, port overrides, recovery, backup and retention.
 
-![Real local fixture evaluations](docs/evaluation-overview.png)
-![Native and generated fixture comparison](docs/evaluation-run.png)
+![Real local fixture evaluations](docs/ui/evaluations-1440.png)
+![Native and generated fixture comparison](docs/ui/run-comparison-1440.png)
 
 ## Architecture
 
@@ -88,7 +88,9 @@ SPECGUARD_DOCKER_TESTS=1 SPECGUARD_RUNNER_IMAGE="$EVALUATION_RUNNER_IMAGE" \
   tests/evaluation/test_evaluation_docker.py tests/evaluation/test_product_docker.py -q
 ```
 
-For Node.js 22 development, run `npm ci` and `npm run build` from `frontend/`. CI runs backend tests, the frontend build and a separate Docker verification job. Deterministic tests require no API credits. Backend direct dependencies are pinned; transitive application dependencies are not fully locked. The runner uses hashed dependency locks and an immutable image ID.
+For Node.js 22.12+ development, run `npm ci`, `npm test` and `npm run build` from `frontend/`. CI runs backend tests, the frontend build and a separate Docker verification job. Deterministic tests require no API credits. Backend direct dependencies are pinned; transitive application dependencies are not fully locked. The runner uses hashed dependency locks and an immutable image ID.
+
+For a concrete exercise with expected counts/scores and browser checks, use the [testing guide](docs/testing-guide.md). See [Phase 7 audit](docs/phase-7-validation.md) and the [controlled live guide](docs/live-evaluation.md). Two separately scoped [external module targets](benchmarks/external/README.md) are also available.
 
 ## Legacy manual QA
 

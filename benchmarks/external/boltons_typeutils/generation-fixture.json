@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "path": ".specguard/generated_tests/test_typeutils.py",
+      "content": "import copy\nfrom boltons.typeutils import make_sentinel, issubclass, get_all_subclasses, classproperty\ndef test_sentinel():\n    s = make_sentinel('missing')\n    assert not s\n    assert copy.copy(s) is s\n    assert copy.deepcopy(s) is s\n    assert s is not make_sentinel('missing')\ndef test_types():\n    class A: pass\n    class B(A): pass\n    class C(B): pass\n    assert issubclass(B, A)\n    assert not issubclass('bad', A)\n    assert get_all_subclasses(A) == [B, C]\ndef test_classproperty():\n    class Example:\n        @classproperty\n        def value(cls): return cls.__name__\n    assert Example.value == 'Example'\n    assert Example().value == 'Example'\n"
+    }
+  ],
+  "assumptions": [
+    "Handwritten smoke fixture; not AI output."
+  ],
+  "targeted_requirements": [
+    "typeutils"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "files": [
+    {
+      "path": ".specguard/generated_tests/test_mathutils.py",
+      "content": "import pytest\nfrom boltons.mathutils import clamp, ceil, floor, Bits\ndef test_clamp():\n    assert clamp(-2, 0, 5) == 0\n    assert clamp(9, 0, 5) == 5\n    assert clamp(3, 0, 5) == 3\n    with pytest.raises(ValueError): clamp(1, 5, 0)\ndef test_options():\n    assert ceil(3, [5, 1, 3]) == 3\n    assert floor(4, [5, 1, 3]) == 3\n    with pytest.raises(ValueError): ceil(6, [1, 5])\n    with pytest.raises(ValueError): floor(0, [1, 5])\ndef test_bits():\n    bits = Bits('0011')\n    assert bits.as_int() == 3\n    assert bits.as_bin() == '0011'\n    assert bits[3] is True\n    assert bits[:2] == Bits('00')\n    assert Bits.from_bytes(bits.as_bytes()).as_int() == 3\n"
+    }
+  ],
+  "assumptions": [
+    "Handwritten smoke fixture; not AI output."
+  ],
+  "targeted_requirements": [
+    "mathutils"
+  ]
+}

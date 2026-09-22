@@ -1,0 +1,26 @@
+[
+  {
+    "subject": "boltons_mathutils",
+    "provider": "fixture",
+    "strategy": "contract-v1",
+    "attempted": 1,
+    "completed": 1,
+    "score_n": 1,
+    "score_mean": 0.5272727272727272,
+    "score_variance": null,
+    "duration_mean": 163.90917862497736,
+    "duration_variance": null
+  },
+  {
+    "subject": "boltons_typeutils",
+    "provider": "fixture",
+    "strategy": "contract-v1",
+    "attempted": 1,
+    "completed": 1,
+    "score_n": 1,
+    "score_mean": 0.32,
+    "score_variance": null,
+    "duration_mean": 43.80841979198158,
+    "duration_variance": null
+  }
+]

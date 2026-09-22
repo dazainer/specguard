@@ -1,0 +1,13 @@
+{
+  "repository": "https://github.com/mahmoud/boltons",
+  "release": "25.0.0",
+  "upstream_commit": "c23dbdadb6fecdf505eb4231559561913b84c13f",
+  "license": "BSD-3-Clause",
+  "scope": "Unmodified mathutils module and its upstream test file; not the entire project",
+  "sha256": {
+    "LICENSE": "c301912653a8d8c99eab6212aa3aea8d164ea249d8ad53c941e0558a0a5ac1e3",
+    "boltons/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "boltons/mathutils.py": "298f80d272dd69510a3c6ed50e6ad76f28ac5e9f92aec0aab81322f7c88369a4",
+    "tests/test_mathutils.py": "665225fa67ebee0138250d45023ccc0ed434fc85675b9213024f849f8997665c"
+  }
+}

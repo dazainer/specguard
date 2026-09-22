@@ -22,7 +22,7 @@ The user explicitly selected **offline fixture verification**. Automatic approva
 - A fixed fixture captured from the real mutmut inventory tests parsing. Unit tests cover outcome normalization, exclusions and cache identity/integrity.
 - First full run: 52 mutants; native killed 40/52 (76.92%); handwritten fixture killed 29/52 (55.77%). No timeout/invalid/error/suspicious outcomes occurred in that run.
 
-Raw first-run evidence: `/private/tmp/specguard345-first-profile/`. All-five-subject evidence: `benchmark-runs/phase345-fixtures/` (Git-ignored). Every subject completed successfully. The first all-five run was an implementation verification run; its environment implementation hash was computed incorrectly from an empty file selection. That bug is fixed for subsequent runs. Do not use that initial hash as implementation provenance.
+Raw first-run evidence: a private temporary profiling directory. All-five-subject evidence: `benchmark-runs/phase345-fixtures/` (Git-ignored). Every subject completed successfully. The first all-five run was an implementation verification run; its environment implementation hash was computed incorrectly from an empty file selection. That bug is fixed for subsequent runs. Do not use that initial hash as implementation provenance.
 
 Verified image: `sha256:cfb3ab969cc2fd896294d53653c424842e2222e1861acbacd6019f8c7721e155`, locally tagged `specguard-runner:phase345`. Docker 29.5.3, Linux ARM64, Python 3.12.13, pytest 8.3.0, mutmut 2.4.4. Rebuild/resolve a fresh image ID if unavailable; the tag is not a published registry reference.
 

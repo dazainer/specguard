@@ -28,7 +28,7 @@ Mean: **77.103 s cold**, **43.225 s warm**, a **1.78× ratio of means** for thes
 
 - [Checked-in results and CSV](../benchmarks/results/phase5-offline/results.csv), [machine-readable results](../benchmarks/results/phase5-offline/results.json), [environment](../benchmarks/results/phase5-offline/environment.json), [variance](../benchmarks/results/phase5-offline/aggregates.json), [failure taxonomy](../benchmarks/results/phase5-offline/failures.json).
 - [Raw per-pair timing/cache evidence](../benchmarks/results/phase5-offline/performance.json) and [performance summary](../benchmarks/results/phase5-offline/performance-summary.json).
-- Full local raw artifacts remain under `benchmark-runs/phase5-final/` (Git-ignored), including each collection/baseline result and per-mutant execution log. The original profiling run remains `/private/tmp/specguard345-first-profile/` if the OS has not removed it.
+- Full local raw artifacts remain under `benchmark-runs/phase5-final/` (Git-ignored), including each collection/baseline result and per-mutant execution log. The original profiling run remains a private temporary directory if the OS has not removed it.
 - The matrix environment records the evaluator implementation hash at invocation. Phase 6 edits happened later; future reproduction may therefore have a different implementation hash even with identical subject and image pins.
 
 From the repository root build `docker build --tag specguard-runner:evaluation docker/runner`, then export `SPECGUARD_RUNNER_IMAGE="$(docker image inspect specguard-runner:evaluation --format '{{.Id}}')"`. From `backend/`:

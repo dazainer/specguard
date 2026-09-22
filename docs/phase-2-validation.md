@@ -61,7 +61,7 @@ Host-only deterministic tests cover traversal, unsafe command options, symlink/h
 
 The first Docker verification exposed two issues, both corrected and rerun: GNU timeout's kill escalation produced exit 137 and needed deadline-aware classification; this Docker kernel also exposes dormant tunnel interfaces, so the network fixture now verifies that only loopback is active and that outbound HTTP/DNS calls fail. No isolation setting was weakened.
 
-CLI result files and prepared inputs from this local verification were retained under `/private/tmp/specguard-phase2-cli-3uz0wjup`; individual adversarial results were retained under `/private/tmp/specguard-phase2-results`. These temporary paths are local evidence and may be removed by the operating system. Reproducible test sources and commands are in the repository.
+CLI result files, prepared inputs and adversarial results were retained in private temporary validation directories. They are local evidence and may be removed by the operating system; reproducible test sources and commands are in the repository.
 
 ## Files and decisions
 

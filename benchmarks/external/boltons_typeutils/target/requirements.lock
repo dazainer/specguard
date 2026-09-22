@@ -1,0 +1,1 @@
+# No third-party runtime dependencies; pytest is pinned in the runner image.

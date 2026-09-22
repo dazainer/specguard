@@ -15,4 +15,4 @@ Start locally using the [README](../README.md). The verification stack used the 
 
 The verification stack is stopped; its named database volume and local evidence are retained. No evaluation worker or runner container from this verification remains active.
 
-No Phase 6 implementation work remains. GitHub description/topics are proposed in operations documentation; remote metadata was not published. Phase 7 is not started.
+No Phase 6 implementation work remains. GitHub description/topics are proposed in operations documentation; remote metadata was not published. Phase 7 was subsequently audited and committed; see [Phase 7 validation](phase-7-validation.md) and [testing instructions](testing-guide.md).

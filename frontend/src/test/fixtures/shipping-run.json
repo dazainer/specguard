@@ -1,0 +1,192 @@
+{
+  "id": "7c3262fb-61aa-40f0-b403-f055eb12f83f",
+  "target_id": "7cad27f7-828d-49b6-b206-8fcee641ca23",
+  "status": "completed",
+  "created_at": 1790007294.985377,
+  "started_at": 1790007295.099079,
+  "finished_at": 1790007319.550175,
+  "heartbeat": 1790007318.982558,
+  "cancel_requested": 0,
+  "max_seconds": 900,
+  "image": "sha256:ec2b2941caf0c74f65c5b25ba5ef69a6e7995c9f41d61c350109632945264152",
+  "failure_reason": null,
+  "pruned": 0,
+  "options": {
+    "strategy": "contract-v1",
+    "baseline_only": false
+  },
+  "report": {
+    "schema_version": 1,
+    "run_id": "4c96e034-d7db-4c92-be4f-48fae4c3d7ea",
+    "status": "completed",
+    "context_mode": "spec_plus_code",
+    "generation_config": {
+      "provider": "fixture",
+      "model": "handwritten-fixture-v1",
+      "prompt_version": "contract-v1",
+      "temperature": 0.0,
+      "seed": null
+    },
+    "provenance": {
+      "repository_commit": "ff90b46c9d611f1897a77565872e54e524ace6b5",
+      "manifest_sha256": "8fa9a3dc6946969d2a26775459fdf0d5888a823411ec3ff22fe3d1b4481c3dd3",
+      "specification_sha256": "96ece76fe90703458848df6f8893d1de89971cedf98be9d57d9b365514a6bff7",
+      "context_sha256": "f7a15728af9ef00ba292a648a0f27825c28c0aa2f3d9c2be36521b38957c5b67",
+      "dependency_lock_sha256": "679561ee925068a6e6b3cd5ae3dceb7a3b4cfc52fa73b4aec4ca9638401cd64e",
+      "python_version": "3.12.13",
+      "runner_image_digest": "sha256:ec2b2941caf0c74f65c5b25ba5ef69a6e7995c9f41d61c350109632945264152",
+      "tool_versions": {
+        "pydantic": "2.9.0",
+        "PyYAML": "6.0.3",
+        "git": "git version 2.52.0",
+        "preparation_python": "3.12.13",
+        "docker": "29.5.3",
+        "platform": "linux/arm64",
+        "python": "3.12.13",
+        "pytest": "8.3.0",
+        "mutmut": "2.4.4"
+      }
+    },
+    "artifacts": [
+      {
+        "path": ".specguard/generated_tests/test_shipping.py",
+        "sha256": "20c4db64638484f1752dee9a84ecd6a84a6cbdb66709ba26878547e89c81f200",
+        "size_bytes": 225
+      }
+    ],
+    "generation": {
+      "attempts": 1,
+      "successful": true,
+      "duration_seconds": 0.002245499985292554,
+      "input_tokens": null,
+      "output_tokens": null,
+      "estimated_cost_usd": null
+    },
+    "native": {
+      "collection_status": "passed",
+      "collected_tests": 8,
+      "accepted_tests": 8,
+      "rejected_tests": 0,
+      "baseline_runs": [
+        {
+          "status": "passed",
+          "collected_tests": 8,
+          "passed_tests": 8,
+          "failed_tests": 0,
+          "duration_seconds": 0.544
+        },
+        {
+          "status": "passed",
+          "collected_tests": 8,
+          "passed_tests": 8,
+          "failed_tests": 0,
+          "duration_seconds": 0.611
+        }
+      ],
+      "baseline_pass_rate": 1.0,
+      "repeat_duration_variance_seconds2": 0.0011222499999999982,
+      "mutation": {
+        "inventory_sha256": "d43742db4e91e9702bf5048c77ebe040727d70e3042afc743ebb8e0030030000",
+        "configuration_sha256": "a4d84db6e248caeafd323400d7b9a851c7250cc48539e1b1ab3d9d25beda8f7d",
+        "generated": 13,
+        "killed": 12,
+        "survived": 1,
+        "timed_out": 0,
+        "invalid": 0,
+        "errors": 0,
+        "suspicious": 0,
+        "denominator": 13,
+        "score": 0.9230769230769231,
+        "duration_seconds": 8.50955995800905
+      }
+    },
+    "generated": {
+      "collection_status": "passed",
+      "collected_tests": 3,
+      "accepted_tests": 3,
+      "rejected_tests": 0,
+      "baseline_runs": [
+        {
+          "status": "passed",
+          "collected_tests": 3,
+          "passed_tests": 3,
+          "failed_tests": 0,
+          "duration_seconds": 0.579
+        },
+        {
+          "status": "passed",
+          "collected_tests": 3,
+          "passed_tests": 3,
+          "failed_tests": 0,
+          "duration_seconds": 0.579
+        }
+      ],
+      "baseline_pass_rate": 1.0,
+      "repeat_duration_variance_seconds2": 0.0,
+      "mutation": {
+        "inventory_sha256": "d43742db4e91e9702bf5048c77ebe040727d70e3042afc743ebb8e0030030000",
+        "configuration_sha256": "a4d84db6e248caeafd323400d7b9a851c7250cc48539e1b1ab3d9d25beda8f7d",
+        "generated": 13,
+        "killed": 3,
+        "survived": 10,
+        "timed_out": 0,
+        "invalid": 0,
+        "errors": 0,
+        "suspicious": 0,
+        "denominator": 13,
+        "score": 0.23076923076923078,
+        "duration_seconds": 8.012641167035326
+      }
+    },
+    "required_baseline_repeats": 2,
+    "failure_reason": null
+  },
+  "timings": {
+    "generation": 0.002245499985292554,
+    "generated_baseline": 4.6493167920270935,
+    "native_baseline": 1.7076349580311216,
+    "inventory": 0.7056591670261696,
+    "native_mutation": 8.50955995800905,
+    "generated_mutation": 8.012641167035326,
+    "total": 23.803739624971058
+  },
+  "queue_seconds": 0.11370182037353516,
+  "events": [
+    {
+      "stage": "queued",
+      "at": 1790007294.985377
+    },
+    {
+      "stage": "preparing",
+      "at": 1790007295.099079
+    },
+    {
+      "stage": "generating",
+      "at": 1790007295.807689
+    },
+    {
+      "stage": "collecting",
+      "at": 1790007295.814493
+    },
+    {
+      "stage": "baseline_running",
+      "at": 1790007299.295548
+    },
+    {
+      "stage": "collecting",
+      "at": 1790007300.464267
+    },
+    {
+      "stage": "baseline_running",
+      "at": 1790007301.002433
+    },
+    {
+      "stage": "mutating",
+      "at": 1790007302.176567
+    },
+    {
+      "stage": "completed",
+      "at": 1790007319.550288
+    }
+  ]
+}

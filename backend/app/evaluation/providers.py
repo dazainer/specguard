@@ -16,6 +16,7 @@ class Completion:
     output_tokens: int | None = None
     model: str | None = None
     fingerprint: str | None = None
+    estimated_cost_usd: float | None = None
 
 
 class ProviderFailure(Exception):
@@ -40,10 +41,13 @@ class FixtureProvider:
 
 class OpenAIProvider:
     """Use the existing AI client's SDK transport, with evaluator-owned retries."""
-    def __init__(self):
+    def __init__(self, budget=None):
         self.ai = AIClient()
+        self.budget = budget
 
     async def complete(self, system, user, config):
+        if self.budget is not None:
+            self.budget.reserve(config.model)
         try:
             response = await self.ai.client.chat.completions.create(
                 model=config.model, temperature=config.temperature, seed=config.seed,
@@ -55,12 +59,20 @@ class OpenAIProvider:
                 response.usage.prompt_tokens if response.usage else None,
                 response.usage.completion_tokens if response.usage else None,
                 response.model, response.system_fingerprint,
+                self.cost(response.usage) if self.budget is not None else None,
             )
         except APIConnectionError as error:
             raise ProviderFailure('provider_connection', True) from error
         except APIStatusError as error:
             retryable = error.status_code in {408, 409, 429} or error.status_code >= 500
             raise ProviderFailure(f'provider_http_{error.status_code}', retryable) from error
+
+    @staticmethod
+    def cost(usage):
+        from app.evaluation.budget import INPUT_RATE, OUTPUT_RATE
+        if usage is None:
+            return None
+        return float(usage.prompt_tokens * INPUT_RATE + usage.completion_tokens * OUTPUT_RATE)
 
     async def close(self):
         await self.ai.client.close()

@@ -38,7 +38,7 @@ def summarize(output, records, environment):
             writer.writeheader()
             writer.writerows(records)
     lines = ['# Benchmark measurements', '',
-        'First-party synthetic subjects; this is not a sample of independent external repositories. Fixture runs are not model-quality evidence.', '',
+        'Subject provenance is defined by each manifest and any upstream.json. Count external repositories separately from module subjects. Fixture runs are not model-quality evidence.', '',
         '| Subject | Provider | Prompt | Completed / attempted | Eligible scores | Mean score | Score variance | Mean seconds |',
         '| --- | --- | --- | --- | --- | --- | --- | --- |']
     for row in aggregates:
@@ -53,7 +53,7 @@ def summarize(output, records, environment):
 
 
 async def benchmark(subjects, output, image, *, live=False, model='gpt-4o-mini', trials=1,
-                    strategies=('contract-v1',), cache_dir=None):
+                    strategies=('contract-v1',), cache_dir=None, budget=None):
     if output.exists():
         raise ValueError('Benchmark output must be a new directory')
     manifests = sorted(subjects.glob('*/specguard.yaml'))
@@ -76,14 +76,15 @@ async def benchmark(subjects, output, image, *, live=False, model='gpt-4o-mini',
                 print(f'Starting {run_name}', flush=True)
                 try:
                     report = await evaluate(manifest, run_output, image, live=live, model=model,
-                                             strategy=strategy, cache_dir=cache_dir)
+                                             strategy=strategy, cache_dir=cache_dir, budget=budget)
                     record = dict(subject=manifest.parent.name, strategy=strategy, trial=trial,
                         provider=report.generation_config.provider, model=report.generation_config.model,
                         status=report.status, failure_reason=report.failure_reason,
                         commit=report.provenance.repository_commit, run_id=report.run_id,
                         generation_successful=report.generation.successful,
                         generation_attempts=report.generation.attempts,
-                        input_tokens=report.generation.input_tokens, output_tokens=report.generation.output_tokens)
+                        input_tokens=report.generation.input_tokens, output_tokens=report.generation.output_tokens,
+                        estimated_cost_usd=report.generation.estimated_cost_usd)
                     for suite in ('native', 'generated'):
                         data = getattr(report, suite)
                         record[suite + '_collected'] = data.collected_tests
@@ -97,7 +98,7 @@ async def benchmark(subjects, output, image, *, live=False, model='gpt-4o-mini',
                     record = dict(subject=manifest.parent.name, strategy=strategy, trial=trial,
                         provider='openai' if live else 'fixture', model=model if live else 'handwritten-fixture-v1',
                         status='failed', failure_reason='setup_' + type(error).__name__, commit=None, run_id=None,
-                        generation_successful=None, generation_attempts=0, input_tokens=None, output_tokens=None)
+                        generation_successful=None, generation_attempts=0, input_tokens=None, output_tokens=None, estimated_cost_usd=None)
                     for suite in ('native', 'generated'):
                         for key in ('collected', 'baseline_pass_rate', 'generated', 'killed', 'survived', 'timed_out', 'invalid', 'errors', 'suspicious', 'denominator', 'score'):
                             record[suite + '_' + key] = None
@@ -115,13 +116,19 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--image', required=True)
     parser.add_argument('--live', action='store_true')
-    parser.add_argument('--model', default='gpt-4o-mini')
+    parser.add_argument('--model', default='gpt-4o-mini-2024-07-18')
     parser.add_argument('--trials', type=int, choices=range(1, 11), default=1)
     parser.add_argument('--strategies', nargs='+', choices=tuple(PROMPTS), default=['contract-v1'])
     parser.add_argument('--cache-dir', type=Path)
+    parser.add_argument('--budget-ledger', type=Path)
+    parser.add_argument('--max-cost-usd')
     args = parser.parse_args()
+    if args.live and not (args.budget_ledger and args.max_cost_usd):
+        parser.error('--live requires --budget-ledger and --max-cost-usd')
+    from app.evaluation.budget import SpendBudget
+    budget = SpendBudget(args.budget_ledger, args.max_cost_usd) if args.live else None
     records = asyncio.run(benchmark(args.subjects, args.output, args.image, live=args.live, model=args.model,
-                                    trials=args.trials, strategies=tuple(args.strategies), cache_dir=args.cache_dir))
+                                    trials=args.trials, strategies=tuple(args.strategies), cache_dir=args.cache_dir, budget=budget))
     raise SystemExit(0 if all(record['status'] == 'completed' for record in records) else 1)
 
 

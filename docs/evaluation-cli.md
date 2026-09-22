@@ -20,7 +20,7 @@ The run directory retains canonical manifest/context, exact prompt and version, 
 
 Two prompt configurations are available through `--strategy contract-v1` and `--strategy boundary-v1`; `--context spec_only` withholds implementation files from the prompt. The fixture provider returns the same handwritten response regardless of prompt, so fixture comparisons cannot measure prompt quality.
 
-`--live --model gpt-4o-mini` selects the OpenAI adapter using backend configuration. It sends the declared benchmark context to OpenAI and incurs API usage. This path is covered by a mocked transport test, but **no live calls were made during this implementation**, per the user's instruction to keep verification offline. JSON-mode responses still undergo local schema, artifact, collection and baseline checks. See the [official Chat Completions reference](https://developers.openai.com/api/reference/resources/chat) for API behavior.
+`--live --model gpt-4o-mini-2024-07-18 --budget-ledger ../benchmark-runs/live-budget.json --max-cost-usd 2` selects the OpenAI adapter using backend configuration. It sends the declared benchmark context to OpenAI and incurs API usage. This path was originally verified with mocked transport only. Paid verification now requires explicit authorization and a persistent budget; see the [controlled live guide](live-evaluation.md). JSON-mode responses still undergo local schema, artifact, collection and baseline checks. See the [official Chat Completions reference](https://developers.openai.com/api/reference/resources/chat) for API behavior.
 
 ## Mutation adapter
 

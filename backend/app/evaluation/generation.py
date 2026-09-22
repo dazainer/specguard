@@ -31,6 +31,7 @@ async def generate(provider, manifest, context: dict, output: Path, *, sleep=asy
     # Exact prompts belong in the private run artifact, never application logs.
     (output / 'prompt.json').write_text(json.dumps({'version': strategy, 'system': system, 'user': user}, indent=2))
     attempts, input_tokens, output_tokens = [], [], []
+    costs = []
     started = time.monotonic()
     artifacts = None
     feedback = ''
@@ -44,8 +45,12 @@ async def generate(provider, manifest, context: dict, output: Path, *, sleep=asy
                 input_tokens.append(response.input_tokens)
             if response.output_tokens is not None:
                 output_tokens.append(response.output_tokens)
+            if response.estimated_cost_usd is not None:
+                costs.append(response.estimated_cost_usd)
             entry.update(response_sha256=sha256(response.text.encode()), response_bytes=len(response.text.encode()),
                          model=response.model, fingerprint=response.fingerprint)
+            entry.update(input_tokens=response.input_tokens, output_tokens=response.output_tokens,
+                         estimated_cost_usd=response.estimated_cost_usd)
             if not response.text.strip():
                 raise ProviderFailure('empty_response', True)
             if len(response.text.encode()) > 2 * 1024 * 1024:
@@ -73,5 +78,6 @@ async def generate(provider, manifest, context: dict, output: Path, *, sleep=asy
     metrics = GenerationMetrics(attempts=len(attempts), successful=artifacts is not None,
                                 duration_seconds=time.monotonic() - started,
                                 input_tokens=sum(input_tokens) if input_tokens else None,
-                                output_tokens=sum(output_tokens) if output_tokens else None)
+                                output_tokens=sum(output_tokens) if output_tokens else None,
+                                estimated_cost_usd=sum(costs) if costs else None)
     return artifacts, metrics

@@ -70,7 +70,9 @@ def gate_suite(runner, request, repeats, output, suite, progress=None):
 
 
 async def evaluate(manifest_path, output, image, *, provider=None, fixture=None, strategy='contract-v1',
-                   live=False, model='gpt-4o-mini', context_mode=None, mutate=True, runner=None, cache_dir=None, progress=None):
+                   live=False, model='gpt-4o-mini', context_mode=None, mutate=True, runner=None, cache_dir=None, progress=None, budget=None):
+    if live and provider is None and budget is None:
+        raise ValueError('live_budget_required')
     started = time.monotonic()
     original = load_manifest(manifest_path)
     data = original.model_dump()
@@ -96,7 +98,7 @@ async def evaluate(manifest_path, output, image, *, provider=None, fixture=None,
     own_provider = provider is None
     timings = {}
     try:
-        provider = provider or (OpenAIProvider() if live else FixtureProvider(fixture or manifest_path.parent / 'generation-fixture.json'))
+        provider = provider or (OpenAIProvider(budget) if live else FixtureProvider(fixture or manifest_path.parent / 'generation-fixture.json'))
         context = json.loads((output / 'context.json').read_text())
         artifacts, metrics = await generate(provider, manifest, context, output)
         report = report.model_copy(update={'generation': metrics})
@@ -184,18 +186,24 @@ def main():
     parser.add_argument('--image', required=True)
     parser.add_argument('--fixture', type=Path)
     parser.add_argument('--live', action='store_true', help='Use the configured OpenAI key; incurs API usage')
-    parser.add_argument('--model', default='gpt-4o-mini')
+    parser.add_argument('--model', default='gpt-4o-mini-2024-07-18')
     parser.add_argument('--strategy', choices=tuple(PROMPTS), default='contract-v1')
     parser.add_argument('--context', choices=('spec_only', 'spec_plus_code'))
     parser.add_argument('--baseline-only', action='store_true')
     parser.add_argument('--cache-dir', type=Path, help='Optional local native-mutation cache; baselines always rerun')
+    parser.add_argument('--budget-ledger', type=Path, help='Persistent shared spend ledger for live calls')
+    parser.add_argument('--max-cost-usd', help='Cumulative ledger ceiling, required with --live (at most 5 USD)')
     args = parser.parse_args()
     if args.live and args.fixture:
         parser.error('--live and --fixture are mutually exclusive')
+    if args.live and not (args.budget_ledger and args.max_cost_usd):
+        parser.error('--live requires --budget-ledger and --max-cost-usd')
+    from app.evaluation.budget import SpendBudget
+    budget = SpendBudget(args.budget_ledger, args.max_cost_usd) if args.live else None
     try:
         report = asyncio.run(evaluate(args.manifest, args.output, args.image, fixture=args.fixture,
                                       strategy=args.strategy, live=args.live, model=args.model,
-                                      context_mode=args.context, mutate=not args.baseline_only, cache_dir=args.cache_dir))
+                                      context_mode=args.context, mutate=not args.baseline_only, cache_dir=args.cache_dir, budget=budget))
     except (ValueError, OSError):
         parser.exit(2, 'Evaluation setup failed; check manifest, image ID, and new output path.\n')
     print(json.dumps({'status': report.status, 'failure_reason': report.failure_reason, 'output': str(args.output)}))

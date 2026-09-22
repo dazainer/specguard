@@ -12,8 +12,10 @@ export function StageTrack({ run }: { run: EvaluationRun }) {
   const firstAt = new Map<string, number>();
   for (const event of events) if (!firstAt.has(event.stage)) firstAt.set(event.stage, event.at);
   const terminal = TERMINAL.has(run.status);
-  const reached = STAGES.filter(stage => firstAt.has(stage));
-  const last = reached[reached.length - 1];
+  // Collection/baseline recur for each suite; the last event, not the furthest
+  // position in the diagram, identifies where a failed run actually stopped.
+  const reached = events.filter(event => STAGES.some(stage => stage === event.stage));
+  const last = reached[reached.length - 1]?.stage;
   const origin = run.created_at;
 
   const nodes = STAGES.map(stage => {
@@ -22,7 +24,7 @@ export function StageTrack({ run }: { run: EvaluationRun }) {
     else if (!terminal && stage === run.status) state = 'current';
     else if (terminal && run.status !== 'completed' && stage === last) state = 'stopped';
     else if (firstAt.has(stage)) state = 'done';
-    return { stage, state, at: firstAt.get(stage) };
+    return { stage, state, at: state === 'stopped' ? reached[reached.length - 1]?.at : firstAt.get(stage) };
   });
   const end = terminal ? run.status : null;
 

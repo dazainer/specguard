@@ -65,6 +65,17 @@ describe('SuiteComparison', () => {
 });
 
 describe('StageTrack', () => {
+  it('marks the last repeated stage when native collection follows generated baselines', () => {
+    render(<StageTrack run={{ ...run, status: 'failed', events: [
+      { stage: 'collecting', at: run.created_at + 1 },
+      { stage: 'baseline_running', at: run.created_at + 2 },
+      { stage: 'collecting', at: run.created_at + 3 },
+      { stage: 'failed', at: run.created_at + 4 },
+    ] }} />);
+    expect(screen.getByText('Collecting').closest('li')).toHaveClass('is-stopped');
+    expect(screen.getByText('Stopped here · +3.0 s')).toBeInTheDocument();
+    expect(screen.getByText('Baseline').closest('li')).not.toHaveClass('is-stopped');
+  });
   it('marks the current stage for an active run', () => {
     render(<StageTrack run={{ ...run, status: 'mutating', finished_at: null, events: run.events!.filter(e => e.stage !== 'completed') }} />);
     expect(screen.getByRole('listitem', { current: 'step' })).toHaveTextContent('Mutating');

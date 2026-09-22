@@ -1,0 +1,7 @@
+{
+  "estimated_cost_usd": 0.00104415,
+  "input_tokens": 1649,
+  "output_tokens": 1328,
+  "api_attempts": 4,
+  "billing_note": "Token-based estimate at standard uncached rates, not a provider invoice. Ledger reservations are conservative bounds, not charges."
+}

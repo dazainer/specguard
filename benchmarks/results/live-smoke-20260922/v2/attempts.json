@@ -1,0 +1,14 @@
+[
+  {
+    "attempt": 1,
+    "response_sha256": "8c88f59556e1d74dc4e84407094c404da484e1c4e36c4313e37070fd983eb77a",
+    "response_bytes": 1822,
+    "model": "gpt-4o-mini-2024-07-18",
+    "fingerprint": "fp_359379690f",
+    "input_tokens": 625,
+    "output_tokens": 469,
+    "estimated_cost_usd": 0.00037515,
+    "status": "valid",
+    "duration_seconds": 6.203013250022195
+  }
+]

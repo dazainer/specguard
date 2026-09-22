@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "run_id": "7215f35e-6d15-4a90-b347-ade9191fd0b3",
+  "status": "failed",
+  "context_mode": "spec_plus_code",
+  "generation_config": {
+    "provider": "openai",
+    "model": "gpt-4o-mini-2024-07-18",
+    "prompt_version": "contract-v1",
+    "temperature": 0.0,
+    "seed": null
+  },
+  "provenance": {
+    "repository_commit": "586607e0a313ad78ec7d1e95abdaef2b22bc1ffb",
+    "manifest_sha256": "1a1bd8a13a4a135d946935350d5e5a5627458041d46dc05efa3e13976c74711e",
+    "specification_sha256": "f7c83ff03832442cdc8c1c282db0b2cdf8785530c9502bc3375885856312f860",
+    "context_sha256": "9376b9b03d8819c017fc948c7d16263008a8c2db6e3c05c01ae91ba65d6241d2",
+    "dependency_lock_sha256": "679561ee925068a6e6b3cd5ae3dceb7a3b4cfc52fa73b4aec4ca9638401cd64e",
+    "python_version": "3.12",
+    "runner_image_digest": "sha256:ec2b2941caf0c74f65c5b25ba5ef69a6e7995c9f41d61c350109632945264152",
+    "tool_versions": {
+      "pydantic": "2.9.0",
+      "PyYAML": "6.0.3",
+      "git": "git version 2.52.0",
+      "preparation_python": "3.12.13"
+    }
+  },
+  "artifacts": [],
+  "generation": {
+    "attempts": 3,
+    "successful": false,
+    "duration_seconds": 13.047420582966879,
+    "input_tokens": 1024,
+    "output_tokens": 859,
+    "estimated_cost_usd": 0.000669
+  },
+  "native": {
+    "collection_status": "not_run",
+    "collected_tests": null,
+    "accepted_tests": null,
+    "rejected_tests": null,
+    "baseline_runs": [],
+    "baseline_pass_rate": null,
+    "repeat_duration_variance_seconds2": null,
+    "mutation": null
+  },
+  "generated": {
+    "collection_status": "not_run",
+    "collected_tests": null,
+    "accepted_tests": null,
+    "rejected_tests": null,
+    "baseline_runs": [],
+    "baseline_pass_rate": null,
+    "repeat_duration_variance_seconds2": null,
+    "mutation": null
+  },
+  "required_baseline_repeats": 2,
+  "failure_reason": "generation_failed"
+}

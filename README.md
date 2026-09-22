@@ -4,6 +4,8 @@ Executable test evaluation from specifications: validate pytest artifacts, requi
 
 The local web product uses five curated subjects and handwritten fixtures. The CLI also has a live-generation adapter, but the published five-subject comparison is offline; fixture results do not establish AI test quality.
 
+The first [controlled live smoke evaluations](docs/live-readiness.md) are published, including failures. A revised prompt produced six executable tests, but one violated the specification; repeated baseline checks correctly blocked mutation. The five-subject live benchmark has not run.
+
 ## Measured benchmark
 
 Twenty evaluations completed across five pinned synthetic subjects (two prompt configurations × two trials). Tests are handwritten fixtures, not live-model output; these results do not measure prompt quality.

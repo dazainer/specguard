@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "run_id": "47f882b9-953a-4e0f-a6ca-c26cca08059a",
+  "status": "failed",
+  "context_mode": "spec_plus_code",
+  "generation_config": {
+    "provider": "openai",
+    "model": "gpt-4o-mini-2024-07-18",
+    "prompt_version": "contract-v2",
+    "temperature": 0.0,
+    "seed": null
+  },
+  "provenance": {
+    "repository_commit": "586607e0a313ad78ec7d1e95abdaef2b22bc1ffb",
+    "manifest_sha256": "cfffeab4690e862fae8e33600603df9000a31636dc33df238c9a091a45e6d23d",
+    "specification_sha256": "f7c83ff03832442cdc8c1c282db0b2cdf8785530c9502bc3375885856312f860",
+    "context_sha256": "9376b9b03d8819c017fc948c7d16263008a8c2db6e3c05c01ae91ba65d6241d2",
+    "dependency_lock_sha256": "679561ee925068a6e6b3cd5ae3dceb7a3b4cfc52fa73b4aec4ca9638401cd64e",
+    "python_version": "3.12.13",
+    "runner_image_digest": "sha256:ec2b2941caf0c74f65c5b25ba5ef69a6e7995c9f41d61c350109632945264152",
+    "tool_versions": {
+      "pydantic": "2.9.0",
+      "PyYAML": "6.0.3",
+      "git": "git version 2.52.0",
+      "preparation_python": "3.12.13",
+      "docker": "29.5.3",
+      "platform": "linux/arm64",
+      "python": "3.12.13",
+      "pytest": "8.3.0",
+      "mutmut": "2.4.4"
+    }
+  },
+  "artifacts": [
+    {
+      "path": ".specguard/generated_tests/test_can_edit.py",
+      "sha256": "fa10cbfe215872abfaad79cbeca53e7b5b8e8309677dbc3af3410f97931f126c",
+      "size_bytes": 1235
+    }
+  ],
+  "generation": {
+    "attempts": 1,
+    "successful": true,
+    "duration_seconds": 6.203271333011799,
+    "input_tokens": 625,
+    "output_tokens": 469,
+    "estimated_cost_usd": 0.00037515
+  },
+  "native": {
+    "collection_status": "not_run",
+    "collected_tests": null,
+    "accepted_tests": null,
+    "rejected_tests": null,
+    "baseline_runs": [],
+    "baseline_pass_rate": null,
+    "repeat_duration_variance_seconds2": null,
+    "mutation": null
+  },
+  "generated": {
+    "collection_status": "passed",
+    "collected_tests": 6,
+    "accepted_tests": 0,
+    "rejected_tests": 6,
+    "baseline_runs": [
+      {
+        "status": "failed",
+        "collected_tests": 6,
+        "passed_tests": 5,
+        "failed_tests": 1,
+        "duration_seconds": 1.275
+      },
+      {
+        "status": "failed",
+        "collected_tests": 6,
+        "passed_tests": 5,
+        "failed_tests": 1,
+        "duration_seconds": 0.606
+      }
+    ],
+    "baseline_pass_rate": 0.0,
+    "repeat_duration_variance_seconds2": 0.11189024999999998,
+    "mutation": null
+  },
+  "required_baseline_repeats": 2,
+  "failure_reason": "generated_baseline_failed"
+}

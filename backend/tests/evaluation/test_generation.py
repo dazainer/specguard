@@ -23,6 +23,20 @@ async def no_sleep(_):
     pass
 
 
+async def test_v2_prompt_exposes_executable_schema_and_complete_path(manifest, subject, tmp_path):
+    configured = manifest.model_copy(update={'generation': manifest.generation.model_copy(update={'prompt_version': 'contract-v2'})})
+    provider = SequenceProvider([(subject / 'generation-fixture.json').read_text()])
+    artifacts, metrics = await generate(provider, configured, {}, tmp_path, sleep=no_sleep)
+    assert artifacts and metrics.successful
+    system, user, _ = provider.calls[0]
+    assert 'complete generated_directory prefix' in system
+    schema = json.loads(system.split('The required JSON schema is: ', 1)[1])
+    assert schema['required'] == ['files']
+    assert schema['additionalProperties'] is False
+    assert json.loads(user)['generated_directory'] == configured.tests.generated_path
+    assert json.loads((tmp_path / 'prompt.json').read_text())['version'] == 'contract-v2'
+
+
 @pytest.mark.parametrize('bad', ['', '{', '{"files":[]}', json.dumps({'files':[{'path':'../escape.py','content':'pass'}]}),
     json.dumps({'files':[{'path':'.specguard/generated_tests/test_bad.py','content':'def invalid('}]}),
     ProviderFailure('provider_connection', True)])

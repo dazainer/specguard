@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "exit_code": 0,
+  "duration_seconds": 1.224,
+  "stdout": ".specguard/generated_tests/test_can_edit.py::test_can_edit_admin_can_edit\n.specguard/generated_tests/test_can_edit.py::test_can_edit_editor_can_edit_own\n.specguard/generated_tests/test_can_edit.py::test_can_edit_editor_cannot_edit_others\n.specguard/generated_tests/test_can_edit.py::test_can_edit_other_roles_cannot_edit\n.specguard/generated_tests/test_can_edit.py::test_can_edit_locked_record\n.specguard/generated_tests/test_can_edit.py::test_can_edit_invalid_input\n\n6 tests collected in 0.01s\n\nSPECGUARD_PYTEST_JSON={\"collected\": 6, \"passed\": 0, \"failed\": 0, \"skipped\": 0, \"errors\": 0, \"failing_tests\": []}\n",
+  "stderr": "",
+  "output_truncated": false,
+  "output_bytes_seen": 609,
+  "image_digest": "sha256:ec2b2941caf0c74f65c5b25ba5ef69a6e7995c9f41d61c350109632945264152",
+  "oom_killed": false,
+  "cleanup_succeeded": true,
+  "error_message": null,
+  "runtime": {
+    "docker": "29.5.3",
+    "platform": "linux/arm64",
+    "python": "3.12.13",
+    "pytest": "8.3.0",
+    "mutmut": "2.4.4"
+  }
+}

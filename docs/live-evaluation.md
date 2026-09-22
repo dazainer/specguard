@@ -12,6 +12,8 @@ Rates were checked against [OpenAI's model documentation](https://developers.ope
 
 ## Run one smoke test
 
+The initial v1/v2 smoke evaluations failed; see [retained evidence and current status](live-readiness.md). `contract-v2` adds explicit schema and artifact-path instructions. It is a distinct prompt version, not evidence that the original prompt succeeded. The example below selects v2; further trials should preserve failed attempts and respect the stop gate.
+
 From `backend/`, with the configured API key in private `backend/.env`, Docker running and `EVALUATION_RUNNER_IMAGE` exported to the immutable local image ID:
 
 ```bash
@@ -19,7 +21,7 @@ From `backend/`, with the configured API key in private `backend/.env`, Docker r
   ../benchmarks/subjects/access_policy/specguard.yaml \
   --output ../benchmark-runs/live-smoke \
   --image "$EVALUATION_RUNNER_IMAGE" \
-  --live --model gpt-4o-mini-2024-07-18 \
+  --live --strategy contract-v2 --model gpt-4o-mini-2024-07-18 \
   --budget-ledger ../benchmark-runs/live-budget.json --max-cost-usd 2
 ```
 
@@ -31,7 +33,7 @@ The example authorizes up to $2 only when you deliberately run it. Use a fresh o
 .venv/bin/python -m app.evaluation.benchmark \
   --subjects ../benchmarks/subjects --output ../benchmark-runs/live-five \
   --image "$EVALUATION_RUNNER_IMAGE" \
-  --live --model gpt-4o-mini-2024-07-18 --trials 1 --strategies contract-v1 \
+  --live --model gpt-4o-mini-2024-07-18 --trials 1 --strategies contract-v2 \
   --budget-ledger ../benchmark-runs/live-budget.json --max-cost-usd 2
 ```
 

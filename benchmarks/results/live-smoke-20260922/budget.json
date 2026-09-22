@@ -1,0 +1,8 @@
+{
+  "model": "gpt-4o-mini-2024-07-18",
+  "limit_usd": "2",
+  "reserved_usd": "0.08663040",
+  "attempts": 4,
+  "pricing_checked": "2026-09-22",
+  "pricing_source": "https://developers.openai.com/api/docs/models/gpt-4o-mini"
+}

@@ -1,0 +1,20 @@
+{
+  "status": "failed",
+  "exit_code": 1,
+  "duration_seconds": 1.275,
+  "stdout": ".....F\n=================================== FAILURES ===================================\n_________________________ test_can_edit_invalid_input __________________________\n\n    def test_can_edit_invalid_input():\n>       with pytest.raises(TypeError):\nE       Failed: DID NOT RAISE <class 'TypeError'>\n\n/tests/.specguard/generated_tests/test_can_edit.py:29: Failed\n=========================== short test summary info ============================\nFAILED ../tests/.specguard/generated_tests/test_can_edit.py::test_can_edit_invalid_input\n1 failed, 5 passed in 0.03s\n\nSPECGUARD_PYTEST_JSON={\"collected\": 6, \"passed\": 5, \"failed\": 1, \"skipped\": 0, \"errors\": 0, \"failing_tests\": [\".specguard/generated_tests/test_can_edit.py::test_can_edit_invalid_input\"]}\n",
+  "stderr": "",
+  "output_truncated": false,
+  "output_bytes_seen": 747,
+  "image_digest": "sha256:ec2b2941caf0c74f65c5b25ba5ef69a6e7995c9f41d61c350109632945264152",
+  "oom_killed": false,
+  "cleanup_succeeded": true,
+  "error_message": "Test failure or interpreter/process termination",
+  "runtime": {
+    "docker": "29.5.3",
+    "platform": "linux/arm64",
+    "python": "3.12.13",
+    "pytest": "8.3.0",
+    "mutmut": "2.4.4"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "files": [
+    {
+      "path": ".specguard/generated_tests/test_can_edit.py",
+      "content": "import pytest\nfrom src.access_policy import can_edit\n\ndef test_can_edit_admin_can_edit():\n    assert can_edit('admin', True, False) is True\n    assert can_edit('admin', False, False) is True\n    assert can_edit('admin', True, True) is False\n\ndef test_can_edit_editor_can_edit_own():\n    assert can_edit('editor', True, False) is True\n    assert can_edit('editor', False, False) is False\n    assert can_edit('editor', True, True) is False\n\ndef test_can_edit_editor_cannot_edit_others():\n    assert can_edit('editor', False, False) is False\n\ndef test_can_edit_other_roles_cannot_edit():\n    assert can_edit('viewer', True, False) is False\n    assert can_edit('viewer', False, False) is False\n\ndef test_can_edit_locked_record():\n    assert can_edit('admin', True, True) is False\n    assert can_edit('editor', True, True) is False\n    assert can_edit('editor', False, True) is False\n    assert can_edit('viewer', True, True) is False\n    assert can_edit('viewer', False, True) is False\n\ndef test_can_edit_invalid_input():\n    with pytest.raises(TypeError):\n        can_edit(123, True, False)\n    with pytest.raises(TypeError):\n        can_edit('admin', 'yes', False)\n    with pytest.raises(TypeError):\n        can_edit('admin', True, 'no')"
+    }
+  ],
+  "assumptions": [
+    "The role names are case-sensitive.",
+    "The function can_edit is the only public API for access policy.",
+    "The input types are strictly enforced as per the contract."
+  ],
+  "targeted_requirements": [
+    "Admins can edit any record regardless of ownership.",
+    "Editors can only edit records they own.",
+    "Locked records cannot be edited by anyone.",
+    "All other roles are denied editing access."
+  ]
+}
